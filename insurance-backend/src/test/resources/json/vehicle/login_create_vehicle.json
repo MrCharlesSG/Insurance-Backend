@@ -1,0 +1,9 @@
+{
+  "user":{
+    "username": "1234ABC",
+    "password": "user"
+  },
+  "model": "Corsa",
+  "brand": "Opel",
+  "manufacturingDate" : "2024-03-24"
+}
