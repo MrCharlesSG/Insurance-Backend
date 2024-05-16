@@ -30,4 +30,5 @@ public class VehicleInfoDTO implements UsernameProvider {
     public String getUsername() {
         return plate;
     }
+
 }

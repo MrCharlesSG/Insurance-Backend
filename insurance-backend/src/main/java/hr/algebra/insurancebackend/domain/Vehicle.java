@@ -37,10 +37,9 @@ public class Vehicle {
 
     @ManyToMany
     @JoinTable(
-            name = "vehicle_driver",
+            name = "VEHICLE_DRIVER_MAPPING",
             joinColumns = @JoinColumn(name = "vehicle_id"),
-            inverseJoinColumns = @JoinColumn(name = "driver_id")
-    )
+            inverseJoinColumns = @JoinColumn(name = "driver_id"))
     private Set<Driver> drivers;
 
     public Vehicle(VehicleCommand vehicleCommand, UserInfo userInfo) {

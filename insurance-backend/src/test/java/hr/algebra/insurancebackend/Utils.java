@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 public class Utils {
@@ -33,6 +34,7 @@ public class Utils {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isOk())
+                .andDo(print())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -53,6 +55,13 @@ public class Utils {
                 .builder()
                 .password("user")
                 .username("1234ABC")
+                .build();
+    }
+    public static AuthRequestDTO correctUserSecond(){
+        return AuthRequestDTO
+                .builder()
+                .password("user")
+                .username("5678DEF")
                 .build();
     }
 

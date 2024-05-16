@@ -8,6 +8,7 @@ import hr.algebra.insurancebackend.dto.VehicleInfoDTO;
 import hr.algebra.insurancebackend.repository.UserRepository;
 import hr.algebra.insurancebackend.wrapper.AccessTokenWrapper;
 import lombok.AllArgsConstructor;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,6 +29,8 @@ public class AuthService {
 
     private UserRepository userRepository;
     private UserService userService;
+
+    @Lazy
     private VehicleService vehicleService;
     private RefreshTokenService refreshTokenService;
 
@@ -75,8 +79,12 @@ public class AuthService {
     public UserInfo getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
-            return userRepository.findByUsername(authentication.getName())
-                    .orElseThrow(() -> new UsernameNotFoundException("User was not found"));
+            String name = authentication.getName();
+            //List<UserInfo> all = userRepository.findAll();
+            Optional<UserInfo> userInfo = userRepository.findByUsername(name);
+            return userInfo.orElse(null);
+            //return userInfo.orElseThrow(() -> new UsernameNotFoundException("User was not found"));
+
         }
         throw new UsernameNotFoundException("There is no user authenticated");
     }
