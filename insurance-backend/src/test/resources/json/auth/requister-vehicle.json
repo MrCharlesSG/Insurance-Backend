@@ -6,6 +6,6 @@
   "vehicle": {
     "model": "Corsa",
     "brand": "Opel",
-    "manufacturingDate" : 2024
+    "manufacturingYear" : 2024
   }
 }

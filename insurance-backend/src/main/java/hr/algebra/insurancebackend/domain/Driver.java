@@ -19,6 +19,7 @@ public class Driver {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private long id;
+
     @Column(name = "name")
     private String name;
 
@@ -28,13 +29,13 @@ public class Driver {
     @Column(name = "passport")
     private String passport;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "birthday")
     private Date birthday;
 
-    @ManyToMany(mappedBy = "drivers")
+    @ManyToMany
     private Set<Vehicle> vehicles;
 
     public Driver(DriverDTO driverDTO) {

@@ -6,9 +6,9 @@ import hr.algebra.insurancebackend.domain.Vehicle;
 import hr.algebra.insurancebackend.dto.VehicleInfoDTO;
 import hr.algebra.insurancebackend.repository.VehicleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,6 +18,7 @@ public class VehicleService {
     private VehicleRepository vehicleRepository;
 
     @Autowired
+    @Lazy
     private AuthService authService;
 
     public Optional<VehicleInfoDTO> createVehicle(VehicleCommand vehicleCommand) {
@@ -44,11 +45,13 @@ public class VehicleService {
     }
 
     public Optional<Vehicle> getVehicleOfUserInfo(UserInfo userInfo) {
-        return vehicleRepository.findByUserInfo(userInfo);
+        Optional<Vehicle> byUserInfoId = vehicleRepository.findByUserInfoId(userInfo.getId());
+        return byUserInfoId;
     }
 
     public Optional<Vehicle> getAuthenticatedVehicle(){
-        return getVehicleOfUserInfo(authService.getCurrentUser());
+        UserInfo currentUser = authService.getCurrentUser();
+        return getVehicleOfUserInfo(currentUser);
     }
 
 
