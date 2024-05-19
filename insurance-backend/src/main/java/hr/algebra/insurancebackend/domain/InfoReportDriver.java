@@ -27,7 +27,7 @@ public class InfoReportDriver {
     @Column(name = "damages")
     private String damages;
 
-    @Column(name = "accepted")
-    private boolean accepted;
+    @Column(name = "status")
+    private InfoReportDriverStatus status;
 }
 

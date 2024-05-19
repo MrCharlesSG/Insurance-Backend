@@ -1,7 +1,6 @@
 package hr.algebra.insurancebackend.controller;
 
 import hr.algebra.insurancebackend.command.VehicleCommand;
-import hr.algebra.insurancebackend.dto.AuthRequestDTO;
 import hr.algebra.insurancebackend.service.VehicleService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

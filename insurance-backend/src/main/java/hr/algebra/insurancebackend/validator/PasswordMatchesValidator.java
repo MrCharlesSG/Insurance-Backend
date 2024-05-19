@@ -1,7 +1,7 @@
 package hr.algebra.insurancebackend.validator;
 
 
-import hr.algebra.insurancebackend.dto.SignUpVehicleDTO;
+import hr.algebra.insurancebackend.security.dto.SignUpVehicleDTO;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

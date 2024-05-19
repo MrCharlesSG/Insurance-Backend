@@ -35,7 +35,7 @@ public class DriverService {
             return Optional.empty();
         }
         //Get vehicle
-        Vehicle vehicle = getAuthenticatedVehicle();
+        Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
         Driver driver = new Driver(driverDTO);
 
         //SAVE
@@ -61,7 +61,7 @@ public class DriverService {
     public Optional<DriverDTO> associateDriver(String email) {
         Optional<Driver> byEmail = driverRepository.findByEmail(email);
         if(byEmail.isPresent()){
-            Vehicle vehicle = getAuthenticatedVehicle();
+            Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
             vehicle.getDrivers().add(byEmail.get());
             vehicleRepository.save(vehicle);
             return driverRepository.findByEmail(email).map(DriverDTO::new);
@@ -72,7 +72,7 @@ public class DriverService {
     public Optional<DriverDTO> disassociateDriver(String email) {
         Optional<Driver> byEmail = driverRepository.findByEmail(email);
         if(byEmail.isPresent()){
-            Vehicle vehicle = getAuthenticatedVehicle();
+            Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
             long driverByEmailID = byEmail.get().getId();
             vehicle.getDrivers().removeIf((driver) -> driver.getId()==driverByEmailID);
             vehicleRepository.save(vehicle);
@@ -82,20 +82,12 @@ public class DriverService {
     }
 
     public List<DriverDTO> getAllDriversOfAuthenticatedVehicle() {
-        Vehicle vehicle = getAuthenticatedVehicle();
+        Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
 
         return vehicle
                 .getDrivers()
                 .stream()
                 .map(DriverDTO::new)
                 .toList();
-    }
-
-    private Vehicle getAuthenticatedVehicle(){
-        Optional<Vehicle> authenticatedVehicle = vehicleService.getAuthenticatedVehicle();
-        if (authenticatedVehicle.isEmpty())
-            throw new UsernameNotFoundException("Could not found the authenticated vehicle");
-        //Associate
-        return authenticatedVehicle.get();
     }
 }

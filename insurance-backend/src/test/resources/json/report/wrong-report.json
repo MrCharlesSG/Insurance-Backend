@@ -1,0 +1,9 @@
+{
+  "driverAId": 3,
+  "driverBId": 4,
+  "vehicleB": "5678DEF",
+  "damages": "Front bumper damage",
+  "date": "2024-05-19T14:30:00Z",
+  "place": "123 Main St, Springfield",
+  "details": "Driver A rear-ended Driver B at a traffic light. Minor injuries reported."
+}

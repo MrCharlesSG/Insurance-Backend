@@ -2,11 +2,11 @@ package hr.algebra.insurancebackend.domain;
 
 import hr.algebra.insurancebackend.command.VehicleCommand;
 import hr.algebra.insurancebackend.dto.VehicleInfoDTO;
+import hr.algebra.insurancebackend.security.domain.UserInfo;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Year;
-import java.util.Date;
 import java.util.Set;
 
 @Entity

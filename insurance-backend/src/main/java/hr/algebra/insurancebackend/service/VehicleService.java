@@ -1,12 +1,14 @@
 package hr.algebra.insurancebackend.service;
 
 import hr.algebra.insurancebackend.command.VehicleCommand;
-import hr.algebra.insurancebackend.domain.UserInfo;
+import hr.algebra.insurancebackend.security.domain.UserInfo;
 import hr.algebra.insurancebackend.domain.Vehicle;
 import hr.algebra.insurancebackend.dto.VehicleInfoDTO;
 import hr.algebra.insurancebackend.repository.VehicleRepository;
+import hr.algebra.insurancebackend.security.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -49,9 +51,10 @@ public class VehicleService {
         return byUserInfoId;
     }
 
-    public Optional<Vehicle> getAuthenticatedVehicle(){
+    public Vehicle getAuthenticatedVehicle(){
         UserInfo currentUser = authService.getCurrentUser();
-        return getVehicleOfUserInfo(currentUser);
+        return getVehicleOfUserInfo(currentUser)
+                .orElseThrow(() -> new UsernameNotFoundException("There is no vehicle authenticated"));
     }
 
 

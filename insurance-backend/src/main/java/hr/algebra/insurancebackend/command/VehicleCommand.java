@@ -1,6 +1,6 @@
 package hr.algebra.insurancebackend.command;
 
-import hr.algebra.insurancebackend.dto.SignUpVehicleDTO;
+import hr.algebra.insurancebackend.security.dto.SignUpVehicleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

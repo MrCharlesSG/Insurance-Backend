@@ -34,7 +34,8 @@ public class DriverController {
 
     @GetMapping()
     public List<DriverDTO> getAllDrivers(){
-        return driverService.getAllDriversOfAuthenticatedVehicle();
+        List<DriverDTO> allDriversOfAuthenticatedVehicle = driverService.getAllDriversOfAuthenticatedVehicle();
+        return allDriversOfAuthenticatedVehicle;
     }
 
     @PostMapping("/associate")
