@@ -9,12 +9,16 @@ import hr.algebra.insurancebackend.security.service.RefreshTokenService;
 import hr.algebra.insurancebackend.security.service.TokenBlackListService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 
@@ -34,7 +38,11 @@ public class AuthController {
 
     @PostMapping("/api/v1/login")
     public Object authenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO){
-        return authService.login(authRequestDTO);
+        try{
+            return authService.login(authRequestDTO);
+        }catch (UsernameNotFoundException e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @PostMapping("/api/v1/register/vehicle")

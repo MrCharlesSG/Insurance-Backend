@@ -31,6 +31,11 @@ public class DriverController {
         return driverService.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not found driver with id :" +id));
     }
+    @GetMapping("/byEmail")
+    public Driver getDriverById(@PathParam("email") String email){
+        return driverService.getByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not found driver with email :" +email));
+    }
 
     @GetMapping()
     public List<DriverDTO> getAllDrivers(){

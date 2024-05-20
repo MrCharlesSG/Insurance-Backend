@@ -48,7 +48,6 @@ public class DriverService {
     }
 
     public Optional<Driver> getById(Long id) {
-        List<Driver> all = driverRepository.findAll();
         Optional<Driver> byId = driverRepository.findById(id);
         return byId;
     }
@@ -89,5 +88,11 @@ public class DriverService {
                 .stream()
                 .map(DriverDTO::new)
                 .toList();
+    }
+
+    public Optional<Driver> getByEmail(String email) {
+        List<Driver> all = driverRepository.findAll();
+        Optional<Driver> byEmail = driverRepository.findByEmail(email);
+        return byEmail;
     }
 }

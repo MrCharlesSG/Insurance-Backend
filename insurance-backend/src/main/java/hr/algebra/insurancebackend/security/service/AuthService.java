@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -37,12 +38,17 @@ public class AuthService {
 
 
     public JwtResponseDTO login(AuthRequestDTO authRequestDTO) {
-        Authentication authenticationUsername = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
-        if (authenticationUsername.isAuthenticated()) {
-            return refreshTokenService.createRefreshTokenAndGenerateResponse(authRequestDTO.getUsername());
-        } else {
+        try {
+            Authentication authenticationUsername = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequestDTO.getUsername(), authRequestDTO.getPassword()));
+            if (authenticationUsername.isAuthenticated()) {
+                return refreshTokenService.createRefreshTokenAndGenerateResponse(authRequestDTO.getUsername());
+            } else {
+                throw new UsernameNotFoundException("invalid user request..!!");
+            }
+        }catch (AuthenticationException e){
             throw new UsernameNotFoundException("invalid user request..!!");
         }
+
     }
 
     public AccessTokenWrapper<VehicleInfoDTO> registerVehicle(SignUpVehicleDTO signUpVehicleDTO) {

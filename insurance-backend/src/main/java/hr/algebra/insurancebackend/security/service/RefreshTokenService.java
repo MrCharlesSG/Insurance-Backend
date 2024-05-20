@@ -25,34 +25,38 @@ public class RefreshTokenService {
     @Autowired
     private JwtService jwtService;
 
-    public RefreshToken createRefreshToken(String username){
+    public RefreshToken createRefreshToken(String username) {
         Optional<UserInfo> userInfo = userRepository.findByUsername(username);
-        if(userInfo.isEmpty()) throw new IllegalArgumentException("User Does not exists");
-        Optional<RefreshToken> refreshTokenInDatabaseOptional = refreshTokenRepository.findByUserInfoIdAndExpiryDateAfter(userInfo.get().getId(), Instant.now());
-        RefreshToken refreshToken;
-        refreshToken = refreshTokenInDatabaseOptional.orElseGet(() -> RefreshToken.builder()
+        if (userInfo.isEmpty()) throw new IllegalArgumentException("User Does not exists");
+        Optional<RefreshToken> byUserInfoId = refreshTokenRepository.findByUserInfoId(userInfo.get().getId());
+
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .id(
+                        byUserInfoId.map(RefreshToken::getId).orElse(0)
+                )
                 .userInfo(userInfo.get())
                 .token(UUID.randomUUID().toString())
-                .expiryDate(Instant.now().plusMillis(60000)) // set expiry of refresh token to 10 minutes - you can configure it application.properties file
-                .build());
+                .expiryDate(Instant.now().plusMillis(600000000)) // set expiry of refresh token to 10 minutes - you can configure it application.properties file
+                .build();
         return refreshTokenRepository.save(refreshToken);
+
     }
 
 
-
-    public Optional<RefreshToken> findByToken(String token){
+    public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepository.findByToken(token);
     }
 
-    public RefreshToken verifyExpiration(RefreshToken token){
-        if(token.getExpiryDate().compareTo(Instant.now())<0){
+    public RefreshToken verifyExpiration(RefreshToken token) {
+        if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
             refreshTokenRepository.delete(token);
             throw new RuntimeException(token.getToken() + " Refresh token is expired. Please make a new login..!");
         }
         return token;
     }
 
-    public JwtResponseDTO refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO){
+    public JwtResponseDTO refreshToken(RefreshTokenRequestDTO refreshTokenRequestDTO) {
         return findByToken(refreshTokenRequestDTO.getToken())
                 .map(this::verifyExpiration)
                 .map(RefreshToken::getUserInfo)
@@ -61,7 +65,7 @@ public class RefreshTokenService {
                     return JwtResponseDTO.builder()
                             .accessToken(accessToken)
                             .token(refreshTokenRequestDTO.getToken()).build();
-                }).orElseThrow(() ->new RuntimeException("Refresh Token is not in DB..!!"));
+                }).orElseThrow(() -> new RuntimeException("Refresh Token is not in DB..!!"));
     }
 
     public JwtResponseDTO createRefreshTokenAndGenerateResponse(String username) {
