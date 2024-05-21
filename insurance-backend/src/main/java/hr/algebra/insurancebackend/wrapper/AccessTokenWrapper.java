@@ -1,6 +1,6 @@
 package hr.algebra.insurancebackend.wrapper;
 
-import hr.algebra.insurancebackend.dto.JwtResponseDTO;
+import hr.algebra.insurancebackend.security.dto.JwtResponseDTO;
 import lombok.*;
 
 @Setter

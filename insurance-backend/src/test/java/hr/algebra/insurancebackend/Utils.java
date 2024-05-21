@@ -1,7 +1,7 @@
 package hr.algebra.insurancebackend;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hr.algebra.insurancebackend.dto.AuthRequestDTO;
+import hr.algebra.insurancebackend.security.dto.AuthRequestDTO;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.MediaType;

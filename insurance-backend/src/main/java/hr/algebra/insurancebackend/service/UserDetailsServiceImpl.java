@@ -1,8 +1,9 @@
 package hr.algebra.insurancebackend.service;
 
 
-import hr.algebra.insurancebackend.domain.UserInfo;
-import hr.algebra.insurancebackend.repository.UserRepository;
+import hr.algebra.insurancebackend.security.domain.UserInfo;
+import hr.algebra.insurancebackend.security.repository.UserRepository;
+import hr.algebra.insurancebackend.security.service.CustomUserDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

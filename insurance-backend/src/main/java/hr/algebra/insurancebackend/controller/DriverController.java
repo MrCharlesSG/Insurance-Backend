@@ -1,13 +1,11 @@
 package hr.algebra.insurancebackend.controller;
 
-import hr.algebra.insurancebackend.command.VehicleCommand;
 import hr.algebra.insurancebackend.domain.Driver;
 import hr.algebra.insurancebackend.dto.DriverDTO;
 import hr.algebra.insurancebackend.service.DriverService;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -31,10 +29,16 @@ public class DriverController {
         return driverService.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not found driver with id :" +id));
     }
+    @GetMapping("/byEmail")
+    public Driver getDriverById(@PathParam("email") String email){
+        return driverService.getByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not found driver with email :" +email));
+    }
 
     @GetMapping()
     public List<DriverDTO> getAllDrivers(){
-        return driverService.getAllDriversOfAuthenticatedVehicle();
+        List<DriverDTO> allDriversOfAuthenticatedVehicle = driverService.getAllDriversOfAuthenticatedVehicle();
+        return allDriversOfAuthenticatedVehicle;
     }
 
     @PostMapping("/associate")

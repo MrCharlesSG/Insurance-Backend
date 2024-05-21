@@ -15,23 +15,16 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DriverDTO {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID")
+
     private long id;
-    @Column(name = "name")
     private String name;
 
-    @Column(name = "surnames")
     private String surnames;
 
-    @Column(name = "passport")
     private String passport;
 
-    @Column(name = "email")
     private String email;
 
-    @Column(name = "birthday")
     private Date birthday;
 
     public DriverDTO(Driver driver) {

@@ -1,11 +1,10 @@
 package hr.algebra.insurancebackend.service;
 
-import hr.algebra.insurancebackend.domain.UserInfo;
-import hr.algebra.insurancebackend.domain.UserRole;
-import hr.algebra.insurancebackend.dto.SignUpDTO;
-import hr.algebra.insurancebackend.dto.SignUpVehicleDTO;
-import hr.algebra.insurancebackend.repository.RolesRepository;
-import hr.algebra.insurancebackend.repository.UserRepository;
+import hr.algebra.insurancebackend.security.domain.UserInfo;
+import hr.algebra.insurancebackend.security.domain.UserRole;
+import hr.algebra.insurancebackend.security.dto.SignUpDTO;
+import hr.algebra.insurancebackend.security.repository.RolesRepository;
+import hr.algebra.insurancebackend.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

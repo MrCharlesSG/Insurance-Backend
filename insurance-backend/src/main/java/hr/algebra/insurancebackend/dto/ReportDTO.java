@@ -1,12 +1,15 @@
 package hr.algebra.insurancebackend.dto;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import hr.algebra.insurancebackend.domain.Report;
+import lombok.*;
 
 import java.util.Date;
 
 @NoArgsConstructor
 @Getter
+@Setter
+@Builder
+@AllArgsConstructor
 public class ReportDTO {
     private long id;
     private InfoReportDriverDTO infoReportDriverA;
@@ -14,4 +17,13 @@ public class ReportDTO {
     private Date date;
     private String place;
     private String details;
+
+    public ReportDTO(Report report) {
+        this.id = report.getId();
+        this.infoReportDriverA = new InfoReportDriverDTO(report.getInfoReportDriverA());
+        this.infoReportDriverB = new InfoReportDriverDTO(report.getInfoReportDriverB());
+        this.date = report.getDate();
+        this.place = report.getPlace();
+        this.details = report.getDetails();
+    }
 }

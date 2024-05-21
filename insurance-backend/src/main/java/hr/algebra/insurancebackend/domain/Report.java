@@ -1,5 +1,6 @@
 package hr.algebra.insurancebackend.domain;
 
+import hr.algebra.insurancebackend.dto.ReportRequestDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,5 +35,11 @@ public class Report {
 
     @Column(name = "details")
     private String details;
+
+    public Report(ReportRequestDTO reportRequestDTO) {
+        this.date=reportRequestDTO.getDate();
+        this.place = reportRequestDTO.getPlace();
+        this.details = reportRequestDTO.getDetails();
+    }
 }
 
