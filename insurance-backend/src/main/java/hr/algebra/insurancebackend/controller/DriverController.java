@@ -1,13 +1,11 @@
 package hr.algebra.insurancebackend.controller;
 
-import hr.algebra.insurancebackend.command.VehicleCommand;
 import hr.algebra.insurancebackend.domain.Driver;
 import hr.algebra.insurancebackend.dto.DriverDTO;
 import hr.algebra.insurancebackend.service.DriverService;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 

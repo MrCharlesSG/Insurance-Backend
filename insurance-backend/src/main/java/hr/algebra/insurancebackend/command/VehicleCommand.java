@@ -11,7 +11,7 @@ import java.time.Year;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VehicleCommand {
-    private SignUpVehicleDTO user;
+    private String plate;
     private String brand;
     private String model;
     private Year manufacturingYear;
