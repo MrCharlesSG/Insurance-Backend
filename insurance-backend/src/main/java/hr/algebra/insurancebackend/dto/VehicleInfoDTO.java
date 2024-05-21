@@ -20,10 +20,12 @@ public class VehicleInfoDTO implements UsernameProvider {
 
     private Year manufacturingYear;
 
+    private long id;
     public VehicleInfoDTO(Vehicle vehicle) {
         this.brand = vehicle.getBrand();
         this.plate = vehicle.getUserInfo().getUsername();
         this.model = vehicle.getModel();
+        this.id= vehicle.getId();
         this.manufacturingYear = vehicle.getManufacturingYear();
     }
 

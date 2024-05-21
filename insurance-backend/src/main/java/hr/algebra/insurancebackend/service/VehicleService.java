@@ -25,25 +25,6 @@ public class VehicleService {
     @Lazy
     private AuthService authService;
 
-    public Optional<VehicleInfoDTO> createVehicle(VehicleCommand vehicleCommand) {
-        /*UserInfo register = authService.registerVehicle(vehicleCommand.getUser());
-        if(register!=null){
-            return Optional.of(
-                    new VehicleInfoDTO(
-                          vehicleRepository.save(
-                                  new Vehicle(
-                                          vehicleCommand,
-                                          register
-                                  )
-                          )
-                    )
-            );
-        }
-
-         */
-        return createVehicle(new VehicleInfoDTO(vehicleCommand), null);
-    }
-
     public Optional<VehicleInfoDTO> createVehicle(VehicleInfoDTO vehicle, UserInfo userInfo) {
         return Optional.of(new VehicleInfoDTO(vehicleRepository.save(new Vehicle(vehicle, userInfo))));
     }
@@ -60,19 +41,31 @@ public class VehicleService {
     }
 
 
-    public Object update(Long id, VehicleCommand vehicleCommand) {
-        return null;
+    public VehicleInfoDTO update(Long id, VehicleCommand vehicleCommand) {
+        Optional<Vehicle> byId = vehicleRepository.findById(id);
+        if(byId.isEmpty()) throw new IllegalArgumentException("Vehicle Not found");
+        Vehicle vehicle = new Vehicle(vehicleCommand, byId.get().getUserInfo());
+        vehicle.setId(id);
+        Vehicle save = vehicleRepository.save(vehicle);
+        VehicleInfoDTO vehicleInfoDTO = new VehicleInfoDTO(save);
+        return vehicleInfoDTO;
     }
 
     public List<VehicleInfoDTO> getAll() {
-        return Collections.emptyList();
+        return vehicleRepository
+                .findAll()
+                .stream()
+                .map(VehicleInfoDTO::new)
+                .toList();
     }
 
     public Optional<VehicleInfoDTO> getById(Long id) {
-        return Optional.empty();
+        return vehicleRepository.findById(id).map(VehicleInfoDTO::new);
     }
 
     public void deleteVehicle(Long id) {
-        
+        Optional<Vehicle> byId = vehicleRepository.findById(id);
+        if(byId.isEmpty()) throw new IllegalArgumentException("Vehicle Not found");
+        vehicleRepository.delete(byId.get());
     }
 }
