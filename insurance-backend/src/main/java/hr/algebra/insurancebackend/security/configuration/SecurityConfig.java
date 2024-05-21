@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/auth/api/v1/**").permitAll()
                         .requestMatchers("/vehicles").permitAll()
+                        .requestMatchers("/vehicles/**").permitAll()
                         .requestMatchers("/driver**").authenticated()
                         .requestMatchers("/report**").authenticated()
                         .requestMatchers("/driver/**").authenticated()
