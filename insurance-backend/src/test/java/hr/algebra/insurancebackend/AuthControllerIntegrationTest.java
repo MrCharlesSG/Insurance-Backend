@@ -46,13 +46,20 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void givenInvalidLoginWithVehicle_whenAuthAndGetToken_thenStatusKO() throws Exception{
+    public void givenIncorrectLoginWithVehicle_whenAuthAndGetToken_thenStatusKO() throws Exception{
         JSONObject login = Utils.loginKO(
                 mvc,
-                getStringOfJsonFile("/json/auth/bad-login-vehicle.json")
+                getStringOfJsonFile("/json/auth/bad-login-request-vehicle.json")
         );
         String string = login.toString();
         assert(string.equals("{}"));
+    }
+    @Test
+    public void givenInvalidLoginWithVehicle_whenAuthAndGetToken_thenStatusKO() throws Exception{
+        mvc.perform(post("/auth/api/v1/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getStringOfJsonFile("/json/auth/invalid-login-request.json")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

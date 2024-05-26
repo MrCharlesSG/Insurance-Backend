@@ -45,7 +45,7 @@ public class Utils {
         MvcResult result = mvc.perform(post("/auth/api/v1/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
-                .andExpect(status().isForbidden())
+                .andExpect(status().isBadRequest())
                 .andReturn();
         return new JSONObject();
     }

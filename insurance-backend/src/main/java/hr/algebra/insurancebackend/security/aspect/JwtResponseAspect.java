@@ -23,7 +23,7 @@ public class JwtResponseAspect {
         Object wrapped = result.getWrapped();
         if (wrapped instanceof UsernameProvider usernameProvider) {
             String username = usernameProvider.getUsername();
-            JwtResponseDTO refreshTokenAndGenerateResponse = refreshTokenService.createRefreshTokenAndGenerateResponse(username);
+            JwtResponseDTO refreshTokenAndGenerateResponse = refreshTokenService.createRefreshTokenAndToken(username);
             return AccessTokenWrapper
                     .builder()
                     .wrapped(wrapped)

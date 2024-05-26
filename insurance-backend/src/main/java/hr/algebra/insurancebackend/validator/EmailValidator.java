@@ -1,10 +1,13 @@
 package hr.algebra.insurancebackend.validator;
 
+import org.springframework.stereotype.Component;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Component
 public class EmailValidator
         implements ConstraintValidator<ValidEmail, String> {
 
@@ -17,6 +20,9 @@ public class EmailValidator
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
+        return (validateEmail(email));
+    }
+    public boolean isValid(String email) {
         return (validateEmail(email));
     }
     private boolean validateEmail(String email) {

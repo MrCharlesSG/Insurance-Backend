@@ -10,7 +10,6 @@ import hr.algebra.insurancebackend.security.service.TokenBlackListService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
@@ -40,14 +39,18 @@ public class AuthController {
     public Object authenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO){
         try{
             return authService.login(authRequestDTO);
-        }catch (UsernameNotFoundException e){
+        }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
     @PostMapping("/api/v1/register/vehicle")
     public Object registrationOfVehicleAndGetToken(@Valid @RequestBody SignUpVehicleDTO signUpVehicleDTO){
-        return authService.registerVehicle(signUpVehicleDTO);
+        try {
+            return authService.registerVehicle(signUpVehicleDTO);
+        } catch (hr.algebra.insurancebackend.exceptions.ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @PostMapping("/api/v1/logout")
@@ -64,6 +67,10 @@ public class AuthController {
 
     @PostMapping("/api/v1/refreshToken")
     public JwtResponseDTO refreshToken(@RequestBody RefreshTokenRequestDTO refreshTokenRequestDTO){
-        return  refreshTokenService.refreshToken(refreshTokenRequestDTO);
+        try {
+            return  refreshTokenService.refreshToken(refreshTokenRequestDTO);
+        } catch (IllegalAccessException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 }
