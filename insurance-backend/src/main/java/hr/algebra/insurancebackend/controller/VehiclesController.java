@@ -1,8 +1,6 @@
 package hr.algebra.insurancebackend.controller;
 
 import hr.algebra.insurancebackend.command.VehicleCommand;
-import hr.algebra.insurancebackend.domain.Driver;
-import hr.algebra.insurancebackend.dto.VehicleDTO;
 import hr.algebra.insurancebackend.dto.VehicleInfoDTO;
 import hr.algebra.insurancebackend.security.dto.SignUpVehicleDTO;
 import hr.algebra.insurancebackend.security.service.AuthService;
@@ -28,23 +26,33 @@ public class VehiclesController {
 
     @PostMapping
     public VehicleInfoDTO createVehicle(@RequestBody VehicleCommand vehicleCommand){
-        VehicleInfoDTO wrapped = authService.registerVehicle(
-                SignUpVehicleDTO
-                        .builder()
-                        .vehicle(new VehicleInfoDTO(vehicleCommand))
-                        .username(vehicleCommand.getPlate())
-                        .password("user")
-                        .matchingPassword("user")
-                        .build()
-        ).getWrapped();
+        VehicleInfoDTO wrapped = null;
+        try {
+            wrapped = authService.registerVehicle(
+                    SignUpVehicleDTO
+                            .builder()
+                            .vehicle(new VehicleInfoDTO(vehicleCommand))
+                            .username(vehicleCommand.getPlate())
+                            .password("user")
+                            .matchingPassword("user")
+                            .build()
+            ).getWrapped();
+        } catch (hr.algebra.insurancebackend.exceptions.ValidationException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
         return wrapped;
 
     }
 
     @GetMapping("/{id}")
-    public VehicleInfoDTO getDriverById(@PathVariable Long id){
+    public VehicleInfoDTO getVehicleById(@PathVariable Long id){
         return vehicleService.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not found driver with id :" +id));
+    }
+    @GetMapping("/byPlate")
+    public VehicleInfoDTO getVehicleByPlate(@PathParam("plate") String plate){
+        return vehicleService.getByPlate(plate)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not found driver with plate: " +plate));
     }
     @GetMapping()
     public List<VehicleInfoDTO> getAll(){

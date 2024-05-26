@@ -1,6 +1,6 @@
 package hr.algebra.insurancebackend.security.filter;
 
-import hr.algebra.insurancebackend.service.JwtService;
+import hr.algebra.insurancebackend.security.service.JwtService;
 import hr.algebra.insurancebackend.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

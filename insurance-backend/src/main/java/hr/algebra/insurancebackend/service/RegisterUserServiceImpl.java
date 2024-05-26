@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class UserService {
+public class RegisterUserServiceImpl implements RegisterUserService {
 
     @Autowired
     private UserRepository userRepository;
@@ -26,6 +26,7 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Override
     public UserInfo registerNewUserAccount(SignUpDTO userDto) throws IllegalArgumentException {
         /*if (emailExists(userDto.getUsername())) {
             throw new IllegalArgumentException("There is an account with that email address: " + userDto.getUsername());

@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static hr.algebra.insurancebackend.Utils.*;
 import static org.hamcrest.Matchers.hasSize;
@@ -24,6 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations =  "classpath:application-integrationtest.properties"
 )
+@Transactional
 public class ReportControllerIntegrationTest {
 
     @Autowired
@@ -44,14 +46,14 @@ public class ReportControllerIntegrationTest {
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$", hasSize(6)))
                 .andDo(print());
 
         mvc.perform(get("/report/waiting")
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(4)))
                 .andDo(print());
 
 
@@ -59,7 +61,7 @@ public class ReportControllerIntegrationTest {
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andDo(print());
 
         mvc.perform(get("/report/rejected")
@@ -75,7 +77,7 @@ public class ReportControllerIntegrationTest {
     public void acceptAReportAndCheckAllTypesReports_thenStatusIsOK() throws Exception {
         JSONObject login = loginOkWithUser(mvc, correctUser());
 
-        mvc.perform(delete("/report/accept/2")
+        mvc.perform(delete("/report/accept/3")
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getStringOfJsonFile("/json/report/close-report.json"))
@@ -86,14 +88,14 @@ public class ReportControllerIntegrationTest {
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(5)))
                 .andDo(print());
 
         mvc.perform(get("/report/waiting")
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andDo(print());
 
 
@@ -101,7 +103,7 @@ public class ReportControllerIntegrationTest {
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(3)))
                 .andDo(print());
 
         mvc.perform(get("/report/rejected")
@@ -116,7 +118,7 @@ public class ReportControllerIntegrationTest {
     public void rejectAReportAndCheckAllTypesReports_thenStatusIsOK() throws Exception {
         JSONObject login = loginOkWithUser(mvc, correctUser());
 
-        mvc.perform(delete("/report/reject/2")
+        mvc.perform(delete("/report/reject/3")
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(getStringOfJsonFile("/json/report/close-report.json"))
@@ -127,14 +129,14 @@ public class ReportControllerIntegrationTest {
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$", hasSize(5)))
                 .andDo(print());
 
         mvc.perform(get("/report/waiting")
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andDo(print());
 
 
@@ -142,7 +144,7 @@ public class ReportControllerIntegrationTest {
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
                 )
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andDo(print());
 
         mvc.perform(get("/report/rejected")
