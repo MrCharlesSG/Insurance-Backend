@@ -74,8 +74,7 @@ The tokens in the frontend are mainly managed by the `TokenService` class. This 
 Every time we login or we refresh the tokens, the `TokenService` will serialize and save the tokens and its expirations days. So whenever we initialize the app, the `TokenService` will look to this serialized tokens and refresh them if the `token` is valid. If there is not token serialized or is expired the login screen is shown.
 
 <aside>
-<img src="https://www.notion.so/icons/light-bulb_blue.svg" alt="https://www.notion.so/icons/light-bulb_blue.svg" width="40px" /> The serialization is securily done, how will be explained later
-
+The serialization is securily done, how will be explained later
 </aside>
 
 The automatically refresh token works as follow: a client ask for the `accessToken` by calling the `getAccessToken` function in the `TokenService` class which will return an String with the `accessToken`, and we have 4 options:
@@ -489,7 +488,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 ```
 
 <aside>
-<img src="https://www.notion.so/icons/light-bulb_blue.svg" alt="https://www.notion.so/icons/light-bulb_blue.svg" width="40px" /> In the same case of before the JPA provider will safely escape the input and execute the equivalent of:
+ In the same case of before the JPA provider will safely escape the input and execute the equivalent of:
 
 ```sql
 SELECT v FROM Vehicle v WHERE v.userInfo.username = 'someUser'' OR ''1''=''1';
