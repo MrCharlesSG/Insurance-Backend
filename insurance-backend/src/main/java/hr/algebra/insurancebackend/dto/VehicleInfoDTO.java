@@ -6,6 +6,7 @@ import hr.algebra.insurancebackend.provider.UsernameProvider;
 import lombok.*;
 
 import java.time.Year;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -41,4 +42,15 @@ public class VehicleInfoDTO implements UsernameProvider {
         return plate;
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (!(object instanceof VehicleInfoDTO that)) return false;
+        return id == that.id && Objects.equals(plate, that.plate) && Objects.equals(brand, that.brand) && Objects.equals(model, that.model) && Objects.equals(manufacturingYear, that.manufacturingYear);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(plate, brand, model, manufacturingYear, id);
+    }
 }

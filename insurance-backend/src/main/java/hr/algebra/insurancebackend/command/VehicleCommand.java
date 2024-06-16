@@ -1,15 +1,16 @@
 package hr.algebra.insurancebackend.command;
 
-import hr.algebra.insurancebackend.security.dto.SignUpVehicleDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.Year;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class VehicleCommand {
     private String plate;
     private String brand;

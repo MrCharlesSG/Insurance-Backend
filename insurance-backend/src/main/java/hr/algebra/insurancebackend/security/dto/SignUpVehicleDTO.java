@@ -28,10 +28,4 @@ public class SignUpVehicleDTO implements SignUpDTO {
     @NotNull
     @NotEmpty
     private VehicleInfoDTO vehicle;
-
-    /*@ValidEmail
-    @NotNull
-    @NotEmpty
-    private String email;*/
-
 }

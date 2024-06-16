@@ -10,7 +10,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.Email;
 import java.util.Date;
 
 @Aspect
@@ -52,7 +51,7 @@ public class DriverValidatorAspect {
         if (driverDTO.getEmail() == null || driverDTO.getEmail().isBlank()) {
             throw new ValidationException("Driver's email cannot be empty");
         }
-        if (!emailValidator.isValid(driverDTO.getEmail())) {
+        if (!emailValidator.isValidEmail(driverDTO.getEmail())) {
             throw new ValidationException("Invalid email format");
         }
         if (driverDTO.getBirthday() == null) {

@@ -31,8 +31,7 @@ public class VehicleServiceImpl implements VehicleService {
 
     @Override
     public Optional<Vehicle> getVehicleOfUserInfo(UserInfo userInfo) {
-        Optional<Vehicle> byUserInfoId = vehicleRepository.findByUserInfoId(userInfo.getId());
-        return byUserInfoId;
+        return vehicleRepository.findByUserInfoId(userInfo.getId());
     }
 
     @Override
@@ -47,11 +46,12 @@ public class VehicleServiceImpl implements VehicleService {
     public VehicleInfoDTO update(Long id, VehicleCommand vehicleCommand) {
         Optional<Vehicle> byId = vehicleRepository.findById(id);
         if(byId.isEmpty()) throw new IllegalArgumentException("Vehicle Not found");
-        Vehicle vehicle = new Vehicle(vehicleCommand, byId.get().getUserInfo());
-        vehicle.setId(id);
+        Vehicle vehicle = byId.get();
+        vehicle.setModel(vehicleCommand.getModel());
+        vehicle.setBrand(vehicleCommand.getBrand());
+        vehicle.setManufacturingYear(vehicleCommand.getManufacturingYear());
         Vehicle save = vehicleRepository.save(vehicle);
-        VehicleInfoDTO vehicleInfoDTO = new VehicleInfoDTO(save);
-        return vehicleInfoDTO;
+        return new VehicleInfoDTO(save);
     }
 
     @Override

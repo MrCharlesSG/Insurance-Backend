@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,9 +56,6 @@ public class AuthController {
     public ResponseEntity<String> logout(HttpServletRequest request) {
         String token = extractTokenFromRequest(request);
         tokenBlacklist.addToBlacklist(token);
-
-        // Clear any session-related data if necessary
-
         return ResponseEntity.ok("Logged out successfully");
     }
 

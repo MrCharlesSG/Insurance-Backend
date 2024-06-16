@@ -8,6 +8,7 @@ import hr.algebra.insurancebackend.service.VehicleService;
 import jakarta.websocket.server.PathParam;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -23,10 +24,18 @@ public class VehiclesController {
 
     private VehicleService vehicleService;
     private AuthService authService;
+    private JmsTemplate jmsTemplate;
 
     @PostMapping
     public VehicleInfoDTO createVehicle(@RequestBody VehicleCommand vehicleCommand){
         VehicleInfoDTO wrapped = null;
+        /*
+        jmsTemplate.convertAndSend(
+                "Saving a vehicle in the database: " +
+                        vehicleCommand
+        );
+         */
+
         try {
             wrapped = authService.registerVehicle(
                     SignUpVehicleDTO
@@ -57,7 +66,6 @@ public class VehiclesController {
     @GetMapping()
     public List<VehicleInfoDTO> getAll(){
         return vehicleService.getAll();
-                //.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not found driver with email :" +email));
     }
 
     @PutMapping("/{id}")

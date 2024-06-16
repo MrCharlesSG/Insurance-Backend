@@ -156,5 +156,55 @@ public class ReportControllerIntegrationTest {
 
     }
 
+    @Test
+    public void openReportWithInvalidData_thenStatusIsBadRequest() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(post("/report")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getStringOfJsonFile("/json/report/invalid-open-report.json"))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void acceptNonExistentReport_thenStatusIsNotFound() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(delete("/report/accept/9999")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getStringOfJsonFile("/json/report/close-report.json"))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void rejectNonExistentReport_thenStatusIsNotFound() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(delete("/report/reject/9999")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void openReportWithoutRequiredFields_thenStatusIsBadRequest() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(post("/report")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{}")
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
 
 }

@@ -26,76 +26,88 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Optional<DriverDTO> createDriver(DriverDTO driverDTO) throws ValidationException {
-        try{
-            checkDriverDTO(driverDTO);
-        }catch (IllegalArgumentException e){
-            return Optional.empty();
-        }
-        //Get vehicle
-        Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
-        Driver driver = new Driver(driverDTO);
-
-        //SAVE
-        Driver savedDriver = driverRepository.save(driver);
-        vehicle.getDrivers().add(savedDriver);
-        vehicleRepository.save(vehicle);
-
-        return Optional.of(new DriverDTO(savedDriver));
-
+        return Optional.ofNullable(driverDTO)
+                .filter(dto -> {
+                    try {
+                        checkDriverDTO(dto);
+                        return true;
+                    } catch (IllegalArgumentException e) {
+                        return false;
+                    }
+                })
+                .map(dto -> {
+                    Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
+                    Driver driver = new Driver(dto);
+                    Driver savedDriver = driverRepository.save(driver);
+                    vehicle.getDrivers().add(savedDriver);
+                    vehicleRepository.save(vehicle);
+                    return new DriverDTO(savedDriver);
+                });
     }
 
+
     @Override
-    public Optional<Driver> getById(Long id) {
-        Optional<Driver> byId = driverRepository.findById(id);
-        return byId;
+    public Optional<DriverDTO> getById(Long id) {
+        return Optional
+                .ofNullable(id)
+                .flatMap(driverRepository::findById)
+                .map(DriverDTO::new);
     }
 
     private void checkDriverDTO(DriverDTO driverDTO) throws IllegalArgumentException {
-        if (driverRepository.findByEmail(driverDTO.getEmail()).isPresent())
-            throw new IllegalArgumentException("Driver with this email already exists");
+        Optional.ofNullable(driverDTO)
+                .map(DriverDTO::getEmail)
+                .flatMap(driverRepository::findByEmail)
+                .ifPresent(driver -> {
+                    throw new IllegalArgumentException("Driver with this email already exists");
+                });
     }
+
 
     @Override
     public Optional<DriverDTO> associateDriver(String email) throws ValidationException {
-        Optional<Driver> byEmail = driverRepository.findByEmail(email);
-        if(byEmail.isPresent()){
-            Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
-            vehicle.getDrivers().add(byEmail.get());
-            vehicleRepository.save(vehicle);
-            return driverRepository.findByEmail(email).map(DriverDTO::new);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(email)
+                .flatMap(driverRepository::findByEmail)
+                .map(driver -> {
+                    Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
+                    vehicle.getDrivers().add(driver);
+                    vehicleRepository.save(vehicle);
+                    return new DriverDTO(driver);
+                });
     }
+
 
     @Override
     public Optional<DriverDTO> disassociateDriver(String email) throws ValidationException {
-        Optional<Driver> byEmail = driverRepository.findByEmail(email);
-        if(byEmail.isPresent()){
-            Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
-            long driverByEmailID = byEmail.get().getId();
-            vehicle.getDrivers().removeIf((driver) -> driver.getId()==driverByEmailID);
-            vehicleRepository.save(vehicle);
-            return driverRepository.findByEmail(email).map(DriverDTO::new);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(email)
+                .flatMap(driverRepository::findByEmail)
+                .map(driver -> {
+                    Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
+                    vehicle.getDrivers().removeIf(d -> d.getId()==driver.getId());
+                    vehicleRepository.save(vehicle);
+                    return new DriverDTO(driver);
+                });
     }
+
 
     @Override
     public List<DriverDTO> getAllDriversOfAuthenticatedVehicle() {
-        Vehicle vehicle = vehicleService.getAuthenticatedVehicle();
-
-        return vehicle
-                .getDrivers()
+        return Optional.ofNullable(vehicleService.getAuthenticatedVehicle())
+                .map(Vehicle::getDrivers)
                 .stream()
+                .flatMap(Set::stream)
                 .map(DriverDTO::new)
                 .toList();
     }
 
+
     @Override
-    public Optional<Driver> getByEmail(String email) throws ValidationException {
-        Optional<Driver> byEmail = driverRepository.findByEmail(email);
-        return byEmail;
+    public Optional<DriverDTO> getByEmail(String email) throws ValidationException {
+        return Optional.ofNullable(email)
+                .flatMap(driverRepository::findByEmail)
+                .map(DriverDTO::new);
     }
+
 
     @Override
     public List<DriverDTO> getByVehicle(String plate) {

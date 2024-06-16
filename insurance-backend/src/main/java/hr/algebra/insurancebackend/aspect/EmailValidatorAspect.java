@@ -31,7 +31,7 @@ public class EmailValidatorAspect {
         if (email == null || email.isBlank()) {
             throw new ValidationException("Email cannot be empty");
         }
-        if (!emailValidator.isValid(email)) {
+        if (!emailValidator.isValidEmail(email)) {
             throw new ValidationException("Invalid email format");
         }
     }

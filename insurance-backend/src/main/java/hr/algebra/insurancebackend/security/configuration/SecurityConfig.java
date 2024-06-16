@@ -37,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((authorize) -> authorize
+                .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/api/v1/**").permitAll()
                         .requestMatchers("/vehicles").permitAll()
                         .requestMatchers("/vehicles/**").permitAll()
@@ -45,8 +45,13 @@ public class SecurityConfig {
                         .requestMatchers("/report**").authenticated()
                         .requestMatchers("/driver/**").authenticated()
                         .requestMatchers("/report/**").authenticated()
+                        .requestMatchers("/actuator/prometheus**").permitAll()
+                        .requestMatchers("/v3/api-docs").permitAll()
+                        .requestMatchers("/v3/api-docs.yaml").permitAll()
+                        .requestMatchers("/actuator/prometheus").permitAll()
+                        .requestMatchers("/metrics**").permitAll()
                         .requestMatchers("/auth/api/v1/register/**").permitAll())
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

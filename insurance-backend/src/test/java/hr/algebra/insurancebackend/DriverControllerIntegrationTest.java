@@ -95,8 +95,14 @@ public class DriverControllerIntegrationTest {
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andDo(print());
 
-        mvc.perform(post("/driver/associate?email=vic.mar@example.com")
-                        .header("Authorization", "Bearer " + login.getString("accessToken")))
+        // Crea el cuerpo de la solicitud con el correo electrónico válido
+        String emailRequestJson = "{\"email\":\"vic.mar@example.com\"}";
+
+        mvc.perform(post("/driver/associate")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailRequestJson)
+                )
                 .andExpect(status().isOk());
 
         mvc.perform(get("/driver")
@@ -106,6 +112,7 @@ public class DriverControllerIntegrationTest {
                 .andExpect(jsonPath("$", hasSize(5)))
                 .andDo(print());
     }
+
 
     @Test
     public void disassociateDriverViaEmail_thenStatusOK() throws Exception {
@@ -118,10 +125,15 @@ public class DriverControllerIntegrationTest {
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andDo(print());
 
-        mvc.perform(delete("/driver/disassociate?email=ger.pa@example.com")
-                        .header("Authorization", "Bearer " + login.getString("accessToken")))
-                .andExpect(status().isOk());
+        // Crea el cuerpo de la solicitud con el correo electrónico válido
+        String emailRequestJson = "{\"email\":\"ger.pa@example.com\"}";
 
+        mvc.perform(delete("/driver/disassociate")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailRequestJson)
+                )
+                .andExpect(status().isOk());
 
         mvc.perform(get("/driver")
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
@@ -129,7 +141,6 @@ public class DriverControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
                 .andDo(print());
-
     }
 
     @Test
@@ -143,4 +154,94 @@ public class DriverControllerIntegrationTest {
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andDo(print());
     }
+
+    @Test
+    public void getDriversByVehiclePlate_IncorrectPlate_thenNotFound() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(get("/driver/byVehicle?plate=123ABC")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                )
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+
+    @Test
+    public void getDriverByEmail_thenStatusOK() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(get("/driver/byEmail")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .param("email", "ger.pa@example.com")
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void getDriverByEmail_notFound_thenStatusNotFound() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(get("/driver/byEmail")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .param("email", "nonexistent@example.com")
+                )
+                .andExpect(status().isNotFound())
+                .andDo(print());
+    }
+    @Test
+    public void getDriverByEmail_IncorrectFormatEmail_thenBadRequest() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(get("/driver/byEmail")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .param("email", "nonexistent.com")
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void createDriver_withInvalidData_thenStatusBadRequest() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        mvc.perform(post("/driver")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(getStringOfJsonFile("/json/driver/invalid_driver.json"))
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    public void associateDriver_withInvalidEmail_thenStatusBadRequest() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+        String emailRequestJson = "{\"email\":\"invalid-email\"}";
+
+        mvc.perform(post("/driver/associate")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailRequestJson)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+
+    @Test
+    public void disassociateDriver_withInvalidEmail_thenStatusBadRequest() throws Exception {
+        JSONObject login = loginOkWithUser(mvc, correctUser());
+
+        String emailRequestJson = "{\"email\":\"invalid-email\"}";
+
+        mvc.perform(delete("/driver/disassociate")
+                        .header("Authorization", "Bearer " + login.getString("accessToken"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailRequestJson)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
 }

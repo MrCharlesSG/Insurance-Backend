@@ -1,0 +1,11 @@
+
+{
+  "username": "1222ABC",
+  "password": "user",
+  "matchingPassword": "",
+  "vehicle": {
+    "model": "",
+    "brand": "",
+    "manufacturingYear" : 2024
+  }
+}

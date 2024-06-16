@@ -26,17 +26,21 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     @Autowired
     private JwtService jwtService;
 
+    @Autowired
+    private InMemoryTokenBlacklist inMemoryTokenBlacklist;
+
     @Override
     public RefreshToken createRefreshToken(String username) {
         Optional<UserInfo> userInfo = userRepository.findByUsername(username);
         if (userInfo.isEmpty()) throw new IllegalArgumentException("User Does not exists");
         Optional<RefreshToken> byUserInfoId = refreshTokenRepository.findByUserInfoId(userInfo.get().getId());
-
+        int id = 0;
+        if(byUserInfoId.isPresent() && (!inMemoryTokenBlacklist.isBlacklisted(byUserInfoId.get().getToken()))){
+                id= byUserInfoId.get().getId();
+        }
 
         RefreshToken refreshToken = RefreshToken.builder()
-                .id(
-                        byUserInfoId.map(RefreshToken::getId).orElse(0)
-                )
+                .id(id)
                 .userInfo(userInfo.get())
                 .token(UUID.randomUUID().toString())
                 .expiryDate(Instant.now().plusMillis(EXPIRATION_TIME_TOKEN))

@@ -92,11 +92,8 @@ public class AuthServiceImpl implements AuthService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.isAuthenticated()) {
             String name = authentication.getName();
-            //List<UserInfo> all = userRepository.findAll();
             Optional<UserInfo> userInfo = userRepository.findByUsername(name);
             return userInfo.orElse(null);
-            //return userInfo.orElseThrow(() -> new UsernameNotFoundException("User was not found"));
-
         }
         throw new UsernameNotFoundException("There is no user authenticated");
     }

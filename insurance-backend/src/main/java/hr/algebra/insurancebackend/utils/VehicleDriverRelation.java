@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public class VehicleDriverRelation {
 
+    private VehicleDriverRelation(){}
     public static void addDriverToVehicle(Vehicle vehicle, Driver driver) {
         vehicle.getDrivers().add(driver);
         driver.getVehicles().add(vehicle);

@@ -18,4 +18,11 @@ public class InMemoryTokenBlacklist implements TokenBlackListService {
     public boolean isBlacklisted(String token) {
         return blacklist.contains(token);
     }
+
+    @Override
+    public void removeFromBlackList(String token) {
+        if(blacklist.contains(token)){
+            removeFromBlackList(token);
+        }
+    }
 }

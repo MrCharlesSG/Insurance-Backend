@@ -28,12 +28,6 @@ public class RegisterUserServiceImpl implements RegisterUserService {
 
     @Override
     public UserInfo registerNewUserAccount(SignUpDTO userDto) throws IllegalArgumentException {
-        /*if (emailExists(userDto.getUsername())) {
-            throw new IllegalArgumentException("There is an account with that email address: " + userDto.getUsername());
-        }
-
-         */
-
         if (usernameExists(userDto.getUsername())) {
             throw new IllegalArgumentException("There is an account with the username address: " + userDto.getUsername());
         }
@@ -50,11 +44,6 @@ public class RegisterUserServiceImpl implements RegisterUserService {
             return userRepository.save(userInfo);
         }
         throw new IllegalArgumentException("Role completely incorrect");
-    }
-
-    private boolean emailExists(String email) {
-        return //userRepository.findByEmail(email) != null;
-        true;
     }
 
     private boolean usernameExists(String username) {

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Year;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -55,5 +56,4 @@ public class Vehicle {
         this.manufacturingYear = vehicle.getManufacturingYear();
         this.userInfo = userInfo;
     }
-
 }

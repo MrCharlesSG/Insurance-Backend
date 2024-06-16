@@ -1,12 +1,14 @@
 package hr.algebra.insurancebackend.security.filter;
 
 import hr.algebra.insurancebackend.security.service.JwtService;
+import hr.algebra.insurancebackend.security.service.TokenBlackListService;
 import hr.algebra.insurancebackend.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,6 +26,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     private UserDetailsServiceImpl userDetailsServiceImpl;
 
+    private TokenBlackListService tokenBlackListService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -37,7 +41,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userDetailsServiceImpl.loadUserByUsername(username);
-            if(jwtService.validateToken(token, userDetails)){
+            if(!tokenBlackListService.isBlacklisted(token) && Boolean.TRUE.equals(jwtService.validateToken(token, userDetails))){
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

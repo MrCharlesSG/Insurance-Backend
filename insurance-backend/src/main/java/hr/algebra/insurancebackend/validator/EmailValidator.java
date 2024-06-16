@@ -13,16 +13,15 @@ public class EmailValidator
 
     private Pattern pattern;
     private Matcher matcher;
-    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-+]+(.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(.[A-Za-z0-9]+)*(.[A-Za-z]{2,})$";
-    @Override
-    public void initialize(ValidEmail constraintAnnotation) {
-    }
+    public static final String EMAIL_PATTERN = "^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\\.[A-Za-z0-9-.]+$";
+
+
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
         return (validateEmail(email));
     }
-    public boolean isValid(String email) {
+    public boolean isValidEmail(String email) {
         return (validateEmail(email));
     }
     private boolean validateEmail(String email) {

@@ -4,33 +4,40 @@ import hr.algebra.insurancebackend.dto.AcceptReportRequestDTO;
 import hr.algebra.insurancebackend.dto.ReportDTO;
 import hr.algebra.insurancebackend.dto.ReportRequestDTO;
 import hr.algebra.insurancebackend.service.ReportService;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
+import static hr.algebra.insurancebackend.constants.Constants.Methods.*;
+import static hr.algebra.insurancebackend.constants.Constants.Metrics.*;
+import static hr.algebra.insurancebackend.constants.Constants.ReportControllerEndpoints.*;
+
 @RestController
-@RequestMapping("report")
+@RequestMapping(REPORT)
 @AllArgsConstructor
 public class ReportController {
 
-
-    @Autowired
     private ReportService reportService;
-    @GetMapping("/rejected")
+
+    private final MeterRegistry meterRegistry;
+
+    @GetMapping(REJECTED)
     public List<ReportDTO> getRejectedReports() {
         return reportService.getRejectedReports();
     }
 
-    @GetMapping("/waiting")
+    @GetMapping(WAITING)
     public List<ReportDTO> getWaitingReports() {
-        return reportService.getWaitingReports();
+       return reportService.getWaitingReports();
     }
 
-    @GetMapping("/accepted")
+    @GetMapping(ACCEPTED)
     public List<ReportDTO> getAcceptedReports() {
         return reportService.getAcceptedReports();
     }
@@ -41,30 +48,29 @@ public class ReportController {
     }
 
     @PostMapping
-    public ReportDTO openReport(@RequestBody ReportRequestDTO reportRequestDTO){
+    public ReportDTO openReport(@RequestBody ReportRequestDTO reportRequestDTO) {
         try {
-            ReportDTO reportDTO = reportService.openAReport(reportRequestDTO);
-            return reportDTO;
-        }catch (Exception e){
+            return reportService.openAReport(reportRequestDTO);
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @DeleteMapping("/accept/{id}")
-    public void acceptReport(@RequestBody AcceptReportRequestDTO acceptReportRequestDTO, @PathVariable long id){
+    @DeleteMapping(ACCEPT_ID)
+    public void acceptReport(@RequestBody AcceptReportRequestDTO acceptReportRequestDTO, @PathVariable long id) {
         try {
             reportService.acceptReport(acceptReportRequestDTO, id);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 
-    @DeleteMapping("/reject/{id}")
-    public void rejectReport(@PathVariable long id){
+    @DeleteMapping(REJECT_ID)
+    public void rejectReport(@PathVariable long id) {
         try {
             reportService.rejectReport(id);
-        }catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
+        } catch (Exception e) {
+           throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
 }

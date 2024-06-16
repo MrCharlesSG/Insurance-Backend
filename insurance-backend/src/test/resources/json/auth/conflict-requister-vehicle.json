@@ -1,0 +1,11 @@
+
+{
+  "username": "1234ABC",
+  "password": "user",
+  "matchingPassword": "user",
+  "vehicle": {
+    "model": "Corsa",
+    "brand": "Opel",
+    "manufacturingYear" : 2024
+  }
+}
