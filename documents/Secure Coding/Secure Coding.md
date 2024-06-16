@@ -3,7 +3,7 @@
 - [Secure](#secure)
 - [Introduction](#introduction)
    * [Key Features](#key-features)
-- [**JWT Tokens**](#jwt-tokens)
+- [**JWT Tokens, Authentication and Authorization**](#jwt-tokens)
    * [**How it Works on the Backend**](#how-it-works-on-the-backend)
       + [**Short-lived `accessToken`**](#short-lived-accesstoken)
       + [**Long-lived `token`**](#long-lived-token)
@@ -61,7 +61,7 @@ The backend is in the present repository and the frontend is in [https://github.
 6. **Future Enhancements**: Plans include the integration of an insurance model and expanded roles for drivers.
 
 <!-- TOC --><a name="jwt-tokens"></a>
-# **JWT Tokens**
+# **JWT Tokens, Authentication and Authorization**
 
 All endpoints in the server, except for **`/auth`** and **`/vehicles`**, are protected. Users need an **`accessToken`** to access the protected endpoints. Nevertheless there are other endpoints not protected. Here’s why those specific endpoints aren’t protected:
 
