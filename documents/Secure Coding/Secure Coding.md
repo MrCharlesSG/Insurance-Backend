@@ -34,8 +34,7 @@ Upon successful login or registration, the user receives a data structure like t
 ```
 
 <aside>
-<img src="https://www.notion.so/icons/light-bulb_blue.svg" alt="https://www.notion.so/icons/light-bulb_blue.svg" width="40px" /> When registering, the user also receives their information wrapped in a wrapper.
-
+When registering, the user also receives their information wrapped in a wrapper.
 </aside>
 
 The **`accessToken`** allows the user to access protected endpoints. However, it is valid for only 10 minutes, while the **`token`** is valid for seven days. Here’s why:
