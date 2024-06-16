@@ -34,8 +34,7 @@ Upon successful login or registration, the user receives a data structure like t
 ```
 
 <aside>
-<img src="https://www.notion.so/icons/light-bulb_blue.svg" alt="https://www.notion.so/icons/light-bulb_blue.svg" width="40px" /> When registering, the user also receives their information wrapped in a wrapper.
-
+When registering, the user also receives their information wrapped in a wrapper.
 </aside>
 
 The **`accessToken`** allows the user to access protected endpoints. However, it is valid for only 10 minutes, while the **`token`** is valid for seven days. Here’s why:
@@ -56,17 +55,17 @@ To refresh the **`accessToken`**, the user calls the **`/auth/api/v1/refreshToke
 
 ### Login
 
-![AuthDiagrams-Login.drawio.png](Secure%20d36d0780c4f84446a1adad2b3aa996ed/AuthDiagrams-Login.drawio.png)
+![AuthDiagrams-Login.drawio.png](images/AuthDiagrams-Login.drawio.png)
 
 ### Register
 
-![The JwtReponseAspect is an aspect executed arround the function in the AuthController encharge of registering a vehicle. The scope of this aspect is to standarize the registering by wrapping the info of the just created user in a wrapper. The main reason is becouse in the future there will be a register of drivers. ](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled.png)
+![The JwtReponseAspect is an aspect executed arround the function in the AuthController encharge of registering a vehicle. The scope of this aspect is to standarize the registering by wrapping the info of the just created user in a wrapper. The main reason is becouse in the future there will be a register of drivers. ](images/Untitled.png)
 
 The JwtReponseAspect is an aspect executed arround the function in the AuthController encharge of registering a vehicle. The scope of this aspect is to standarize the registering by wrapping the info of the just created user in a wrapper. The main reason is becouse in the future there will be a register of drivers. 
 
 ### Refresh Token
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%201.png)
+![Untitled](images/Untitled%201.png)
 
 ## **How it Works on the Javafx Frontend**
 
@@ -75,8 +74,7 @@ The tokens in the frontend are mainly managed by the `TokenService` class. This 
 Every time we login or we refresh the tokens, the `TokenService` will serialize and save the tokens and its expirations days. So whenever we initialize the app, the `TokenService` will look to this serialized tokens and refresh them if the `token` is valid. If there is not token serialized or is expired the login screen is shown.
 
 <aside>
-<img src="https://www.notion.so/icons/light-bulb_blue.svg" alt="https://www.notion.so/icons/light-bulb_blue.svg" width="40px" /> The serialization is securily done, how will be explained later
-
+The serialization is securily done, how will be explained later
 </aside>
 
 The automatically refresh token works as follow: a client ask for the `accessToken` by calling the `getAccessToken` function in the `TokenService` class which will return an String with the `accessToken`, and we have 4 options:
@@ -86,7 +84,7 @@ The automatically refresh token works as follow: a client ask for the `accessTok
     2. There is no serialized token and the client miss call the function. In this case a `RuntimeException` is thrown.
 2. The `token` has expired, so we throw an `IllegalAccessException` that must be managed by all the clients. The normal flow is that the clients send a message to the user and open the login screen.
     
-    ![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%202.png)
+    ![Untitled](images/Untitled%202.png)
     
 3. The `accessToken` has expired but the `token` not, so we refresh the token by calling the REST API.
 4. Everithing is ok and we just give the client the `accessToken`.
@@ -97,7 +95,7 @@ Integration test are done for `AuthController`, `DriversController`, and `Report
 
 The development of the project has follow an almost TDD (Test Driven Development), as almost all test where develop first and then the controllers where develop and tested. Nevertheless there has been a development for brand new test to success in the Coverage Report. Success in this context meant cover the 100% of the lines of the three controllers. After finishing development the test didn’t cover all the exceptions of controllers, nevertheless now the tests cover the 100% of the controllers.
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%203.png)
+![Untitled](images/Untitled%203.png)
 
 The tests are normally develop following use cases, here are some examples:
 
@@ -490,7 +488,7 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
 ```
 
 <aside>
-<img src="https://www.notion.so/icons/light-bulb_blue.svg" alt="https://www.notion.so/icons/light-bulb_blue.svg" width="40px" /> In the same case of before the JPA provider will safely escape the input and execute the equivalent of:
+ In the same case of before the JPA provider will safely escape the input and execute the equivalent of:
 
 ```sql
 SELECT v FROM Vehicle v WHERE v.userInfo.username = 'someUser'' OR ''1''=''1';
@@ -560,13 +558,13 @@ In this section I’ll document the report I did with SonarLint after finishing 
 
 The initial situation was as follow:
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%204.png)
+![Untitled](images/Untitled%204.png)
 
 There where 91 issues in total. There where 9 issues (10%) with high impact, 43 issues (48%) with medium impact and 38 (42%) with low impact. The objective is to reduce to 0 the hight impact issues and to reduce in half the medium issues. Here are some issues and how I solve them.
 
 ## Duplicated String
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%205.png)
+![Untitled](images/Untitled%205.png)
 
 6 high impact issues where in the `ReportController`, and where the same issue: “String literals should not be duplicated”. All this string where used for taking metrics of the controller. For solving all those 6 issues I created a class call `Constants` with all of the Strings. 
 
@@ -605,11 +603,11 @@ public class Constants {
 
 This is the result of the last scan (those small impact issues where alredy solved).
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%206.png)
+![Untitled](images/Untitled%206.png)
 
 There where the same issue of duplicated Strings in the `DriverController`
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%207.png)
+![Untitled](images/Untitled%207.png)
 
 I solved by creating a class in the `constant` package like follows
 
@@ -621,13 +619,13 @@ public class ErrorMessages {
 
 As you can see there are no more issues in the `DriverController`
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%208.png)
+![Untitled](images/Untitled%208.png)
 
 ## Empty Folder
 
 Other issue was the implementation of a method that was empty. 
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%209.png)
+![Untitled](images/Untitled%209.png)
 
 The problem was in the `EmailValidator` class, which implement the `ConstraintValidator<A,T>` interface. This is the inheritance of an old implementation of `EmailValidator`. In the begining this class was supose to be use in an anotation. Nevertheles I want to maintain this annotation for the future, so I just unimplemented the function. This means I don’t overwrite it and use the parent implementation. This parent implementation is a default function of the interface.
 
@@ -692,13 +690,13 @@ public interface ConstraintValidator<A extends Annotation, T> {
 
 This is the result of the last scan
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%2010.png)
+![Untitled](images/Untitled%2010.png)
 
 The same problem was in the `PasswordMatchesValidator` and was solved the same way.
 
 Whith so I finished with all of the high risk errors.
 
-[Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled.mp4)
+[Untitled](images/Untitled.mp4)
 
 ## String Pattern
 
@@ -718,7 +716,7 @@ public class EmailValidator
 }
 ```
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%2011.png)
+![Untitled](images/Untitled%2011.png)
 
 This issue is ralated to the potential inefficiency and risk of stack overflow in the regular expression used for validating email addresses.
 
@@ -741,7 +739,7 @@ public static final String EMAIL_PATTERN = "^[A-Za-z0-9_.+-]+@[A-Za-z0-9-]+\\\\.
 
 In this optimized version, the repetition is removed, avoiding the risk of excessive backtracking and potential stack overflow.
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%2012.png)
+![Untitled](images/Untitled%2012.png)
 
 ## End Situation
 
@@ -750,7 +748,7 @@ At the end I had 35 issues, none of them with high impact. The final percentage 
 - 7 (20%) with low impact
 - 28 (80%) with medium impact. In fact 22 (80%) of those issues are for changing the `Autowired` with the `AllArgsConstructor`, the problem is that when I remove some of then does not autowired correctly.
 
-[Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%201.mp4)
+[Untitled](images/Untitled%201.mp4)
 
 # OWASP ZAP
 
@@ -758,7 +756,7 @@ After finishing the project, testing of the REST API using OWASP ZAP, a tool des
 
 The scan results are illustrated below:
 
-![Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%2013.png](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%2013.png)
+![images/Untitled%2013.png](images/Untitled%2013.png)
 
 The findings revealed only informational alerts. The first alert highlighted an authentication request, categorized as informational rather than a critical vulnerability, suggesting there was no immediate security issue requiring remediation.
 
@@ -800,4 +798,4 @@ It's important to note that while OWASP ZAP recommended changing the method for 
 
 The last scan resulted as follows:
 
-![Untitled](Secure%20d36d0780c4f84446a1adad2b3aa996ed/Untitled%2014.png)
+![Untitled](images/Untitled%2014.png)
