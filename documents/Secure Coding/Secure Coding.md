@@ -48,6 +48,7 @@
 # Introduction
 
 This project is an application designed to manage vehicles and their associated drivers, leveraging a Spring backend and a JavaFX frontend. It was created to meet the requirements of three distinct courses, resulting in some design choices that, while potentially unconventional or inefficient, serve to demonstrate alternative approaches and solutions.
+The backend is in the present repository and the frontend is in https://github.com/MrCharlesSG/Insurance-Frontend.
 
 <!-- TOC --><a name="key-features"></a>
 ## Key Features
