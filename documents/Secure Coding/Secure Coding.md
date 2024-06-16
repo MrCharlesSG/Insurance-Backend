@@ -55,7 +55,7 @@ To refresh the **`accessToken`**, the user calls the **`/auth/api/v1/refreshToke
 
 ### Login
 
-![AuthDiagrams-Login.drawio.png](Secure%20d36d0780c4f84446a1adad2b3aa996ed/AuthDiagrams-Login.drawio.png)
+![AuthDiagrams-Login.drawio.png](imagesAuthDiagrams-Login.drawio.png)
 
 ### Register
 
