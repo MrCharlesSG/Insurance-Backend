@@ -1,9 +1,55 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Secure](#secure)
+- [Introduction](#introduction)
+   * [Key Features](#key-features)
+- [**JWT Tokens**](#jwt-tokens)
+   * [**How it Works on the Backend**](#how-it-works-on-the-backend)
+      + [**Short-lived `accessToken`**](#short-lived-accesstoken)
+      + [**Long-lived `token`**](#long-lived-token)
+      + [**Refreshing the `accessToken`**](#refreshing-the-accesstoken)
+   * [Sequence Charts in Backend](#sequence-charts-in-backend)
+      + [Login](#login)
+      + [Register](#register)
+      + [Refresh Token](#refresh-token)
+   * [**How it Works on the Javafx Frontend**](#how-it-works-on-the-javafx-frontend)
+   * [Good Practices](#good-practices)
+      + [First Use Case](#first-use-case)
+      + [Second Use Case](#second-use-case)
+      + [Third Use Case](#third-use-case)
+      + [Fourth Use Case](#fourth-use-case)
+      + [Fifth Use Case](#fifth-use-case)
+- [Serialization](#serialization)
+   * [**Serialization Architecture**](#serialization-architecture)
+   * [**Serialization Security**](#serialization-security)
+      + [**`WhitelistValidator`**](#whitelistvalidator)
+      + [**Initialization of `deserializationClassWhitelist`**](#initialization-of-deserializationclasswhitelist)
+- [**SQL Injection**](#sql-injection)
+   * [What Not To Do](#what-not-to-do)
+   * [**Secure Repository Implementations**](#secure-repository-implementations)
+      + [**VehicleRepository**](#vehiclerepository)
+      + [**ReportRepository**](#reportrepository)
+   * [**Security Measures**](#security-measures)
+      + [**Use of JPQL with Named Parameters**](#use-of-jpql-with-named-parameters)
+- [SonarLint Report](#sonarlint-report)
+   * [Initial Situation](#initial-situation)
+   * [Duplicated String](#duplicated-string)
+   * [Empty Folder](#empty-folder)
+   * [String Pattern](#string-pattern)
+   * [End Situation](#end-situation)
+- [OWASP ZAP](#owasp-zap)
+
+<!-- TOC end -->
+
+<!-- TOC --><a name="secure"></a>
 # Secure
 
+<!-- TOC --><a name="introduction"></a>
 # Introduction
 
 This project is an application designed to manage vehicles and their associated drivers, leveraging a Spring backend and a JavaFX frontend. It was created to meet the requirements of three distinct courses, resulting in some design choices that, while potentially unconventional or inefficient, serve to demonstrate alternative approaches and solutions.
 
+<!-- TOC --><a name="key-features"></a>
 ## Key Features
 
 1. **User Management**: Vehicles can register, log in, and log out of the system.
@@ -13,6 +59,7 @@ This project is an application designed to manage vehicles and their associated 
 5. **Report Handling**: Vehicles can accept or reject reports made by others regarding their car.
 6. **Future Enhancements**: Plans include the integration of an insurance model and expanded roles for drivers.
 
+<!-- TOC --><a name="jwt-tokens"></a>
 # **JWT Tokens**
 
 All endpoints in the server, except for **`/auth`** and **`/vehicles`**, are protected. Users need an **`accessToken`** to access the protected endpoints. Nevertheless there are other endpoints not protected. Here’s why those specific endpoints aren’t protected:
@@ -20,6 +67,7 @@ All endpoints in the server, except for **`/auth`** and **`/vehicles`**, are pro
 - **`/auth`**: This endpoint must be publicly accessible so users can authenticate.
 - **`/vehicles`**: This endpoint is used in a MuleProject, and managing authentication for all calls through the MuleProject was deemed unnecessary. Therefore, this endpoint is "public" in the current version of the project, as it handles non-sensitive information. It has also been stripped of some key features to make it more manageable. These key features are used by other services but not by the **`VehiclesController`**.
 
+<!-- TOC --><a name="how-it-works-on-the-backend"></a>
 ## **How it Works on the Backend**
 
 To access a protected endpoint, the user must provide a header with the keyword **`Authorization`** and the value **`Bearer *accessToken*`**.
@@ -39,34 +87,42 @@ When registering, the user also receives their information wrapped in a wrapper.
 
 The **`accessToken`** allows the user to access protected endpoints. However, it is valid for only 10 minutes, while the **`token`** is valid for seven days. Here’s why:
 
+<!-- TOC --><a name="short-lived-accesstoken"></a>
 ### **Short-lived `accessToken`**
 
 The **`accessToken`** is valid for 10 minutes to minimize security risks. Since the **`accessToken`** is used frequently in almost every request to protected endpoints, there is a higher risk of it being intercepted or stolen. By limiting its lifespan, the window of opportunity for an attacker to use a stolen token is significantly reduced, enhancing overall security.
 
+<!-- TOC --><a name="long-lived-token"></a>
 ### **Long-lived `token`**
 
 The **`token`**, on the other hand, is valid for seven days. This longer lifespan provides a more convenient user experience. Users don’t have to log in repeatedly throughout the day. Instead, they can use the **`token`** to refresh their **`accessToken`** when it expires. This way, users only need to log in once a week, balancing security and convenience.
 
+<!-- TOC --><a name="refreshing-the-accesstoken"></a>
 ### **Refreshing the `accessToken`**
 
 To refresh the **`accessToken`**, the user calls the **`/auth/api/v1/refreshToken`** endpoint with the **`token`** in the request body. This process extends the user's session without requiring them to re-enter their credentials frequently, thus maintaining a seamless and secure user experience.
 
+<!-- TOC --><a name="sequence-charts-in-backend"></a>
 ## Sequence Charts in Backend
 
+<!-- TOC --><a name="login"></a>
 ### Login
 
 ![AuthDiagrams-Login.drawio.png](images/AuthDiagrams-Login.drawio.png)
 
+<!-- TOC --><a name="register"></a>
 ### Register
 
 ![The JwtReponseAspect is an aspect executed arround the function in the AuthController encharge of registering a vehicle. The scope of this aspect is to standarize the registering by wrapping the info of the just created user in a wrapper. The main reason is becouse in the future there will be a register of drivers. ](images/Untitled.png)
 
 The JwtReponseAspect is an aspect executed arround the function in the AuthController encharge of registering a vehicle. The scope of this aspect is to standarize the registering by wrapping the info of the just created user in a wrapper. The main reason is becouse in the future there will be a register of drivers. 
 
+<!-- TOC --><a name="refresh-token"></a>
 ### Refresh Token
 
 ![Untitled](images/Untitled%201.png)
 
+<!-- TOC --><a name="how-it-works-on-the-javafx-frontend"></a>
 ## **How it Works on the Javafx Frontend**
 
 The tokens in the frontend are mainly managed by the `TokenService` class. This class is encharge of providing the `accessToken`, initializing the session and refreshing the `accessToken` automatically till the `token` gets invalid. When closing the application and opening again the user won’t need to login again (if the `token` is valid), how is done this?
@@ -89,6 +145,7 @@ The automatically refresh token works as follow: a client ask for the `accessTok
 3. The `accessToken` has expired but the `token` not, so we refresh the token by calling the REST API.
 4. Everithing is ok and we just give the client the `accessToken`.
 
+<!-- TOC --><a name="good-practices"></a>
 ## Good Practices
 
 Integration test are done for `AuthController`, `DriversController`, and `ReportsController`. The scope of this test is to test all endpoints the REST API expose. This three controllers are (in this moment) all the functionallity the application has. As already mention before the `VehicleController` is a mocking controller for use in the integration of other tools regarding the Advance Interoperability for Information System project. 
@@ -99,6 +156,7 @@ The development of the project has follow an almost TDD (Test Driven Development
 
 The tests are normally develop following use cases, here are some examples:
 
+<!-- TOC --><a name="first-use-case"></a>
 ### First Use Case
 
 1. User Login
@@ -136,6 +194,7 @@ The tests are normally develop following use cases, here are some examples:
     }
 ```
 
+<!-- TOC --><a name="second-use-case"></a>
 ### Second Use Case
 
 1. User login
@@ -186,6 +245,7 @@ The tests are normally develop following use cases, here are some examples:
     }
 ```
 
+<!-- TOC --><a name="third-use-case"></a>
 ### Third Use Case
 
 1. User Login but insert incorrect token so he can’t refresh it
@@ -203,6 +263,7 @@ The tests are normally develop following use cases, here are some examples:
     }
 ```
 
+<!-- TOC --><a name="fourth-use-case"></a>
 ### Fourth Use Case
 
 1. User login
@@ -234,6 +295,7 @@ The tests are normally develop following use cases, here are some examples:
     }
 ```
 
+<!-- TOC --><a name="fifth-use-case"></a>
 ### Fifth Use Case
 
 1. User try to register incorrectly
@@ -249,10 +311,12 @@ The tests are normally develop following use cases, here are some examples:
     }
 ```
 
+<!-- TOC --><a name="serialization"></a>
 # Serialization
 
 The security breach I wanted to cover in this chapter is the serialization. In this issue the attaquers try to serialize in one of our serialized files classes that we don’t need. The only part of my project that had this problem is when I serialize all the info for the logged user in the frontend.
 
+<!-- TOC --><a name="serialization-architecture"></a>
 ## **Serialization Architecture**
 
 To fully understand how I secure the serialization process, I first need to explain how serialization is implemented.
@@ -315,10 +379,12 @@ public class VehicleSerializer extends Serializer<VehicleInfoDTO> {
 
 The way these subclasses are implemented makes it impossible for clients to use **`Serializer`** to serialize classes other than **`VehicleInfoDTO`** and **`Token`**.
 
+<!-- TOC --><a name="serialization-security"></a>
 ## **Serialization Security**
 
 As you may notice, all functions in **`Serializer`** throw a **`NonSerializableClassException`**. This is a custom exception thrown by a class responsible for verifying if the file and serialized class are correct.
 
+<!-- TOC --><a name="whitelistvalidator"></a>
 ### **`WhitelistValidator`**
 
 The **`WhitelistValidator`** class is responsible for validating the classes involved in serialization.
@@ -369,6 +435,7 @@ public class WhitelistValidator {
 
 The **`checkIfIsValidClass`** method checks if a class is in the whitelist, throwing a **`NonSerializableClassException`** if it is not. The **`validateSerializedFile`** method scans the file, checking all objects against the whitelist.
 
+<!-- TOC --><a name="initialization-of-deserializationclasswhitelist"></a>
 ### **Initialization of `deserializationClassWhitelist`**
 
 Only objects implemented by the generic types of **`Serializer`** subclasses can be serialized. Using reflection, a function iterates through all classes in the *serialization* package and retrieves the generic type from the classes that implement **`Serializer`**. This process is shown below:
@@ -441,10 +508,12 @@ public class ReflectionUtils {
 
 This approach ensures that only the correct classes, defined by the generic types of **`Serializer`** subclasses, are allowed for serialization.
 
+<!-- TOC --><a name="sql-injection"></a>
 # **SQL Injection**
 
 In this section, I'll document the measures taken to mitigate SQL injection vulnerabilities in the project repositories. As all repositories extend from **`JpaRepository`,** the main vulnerability involves using JPQL (Java Persistence Query Language) and the Spring Data JPA repository's **`@Query`** annotation with parameter binding to ensure that inputs are handled securely.
 
+<!-- TOC --><a name="what-not-to-do"></a>
 ## What Not To Do
 
 This example demonstrates the incorrect way of building and executing a query in a Spring Data JPA repository, which is susceptible to SQL injection attacks.
@@ -466,10 +535,12 @@ In this example, the **`@Query`** annotation uses native SQL with a positional p
 
 The way of solving it is by binding the user inputs. 
 
+<!-- TOC --><a name="secure-repository-implementations"></a>
 ## **Secure Repository Implementations**
 
 This are some examples of how the **`@Query`** annotation should be correctly implemented helped by the `@Param` annotation in the function parameter.
 
+<!-- TOC --><a name="vehiclerepository"></a>
 ### **VehicleRepository**
 
 Similarly, the **`VehicleRepository`** uses parameter binding in custom queries to prevent SQL injection.
@@ -496,6 +567,7 @@ SELECT v FROM Vehicle v WHERE v.userInfo.username = 'someUser'' OR ''1''=''1';
 
 </aside>
 
+<!-- TOC --><a name="reportrepository"></a>
 ### **ReportRepository**
 
 The **`ReportRepository`** contains several custom query methods. Each query uses named parameters to safely bind user inputs, preventing SQL injection attacks.
@@ -534,8 +606,10 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
 ```
 
+<!-- TOC --><a name="security-measures"></a>
 ## **Security Measures**
 
+<!-- TOC --><a name="use-of-jpql-with-named-parameters"></a>
 ### **Use of JPQL with Named Parameters**
 
 By using JPQL with named parameters, the queries are automatically safe from SQL injection attacks. JPQL, part of the JPA specification, translates these queries into the native SQL of the underlying database. The use of **`@Param`** annotations ensures that the parameters are bound securely:
@@ -550,10 +624,12 @@ List<Report> findAllByVehicleIdAndRejected(@Param("vehicleId") Long vehicleId);
 
 ```
 
+<!-- TOC --><a name="sonarlint-report"></a>
 # SonarLint Report
 
 In this section I’ll document the report I did with SonarLint after finishing the project. 
 
+<!-- TOC --><a name="initial-situation"></a>
 ## Initial Situation
 
 The initial situation was as follow:
@@ -562,6 +638,7 @@ The initial situation was as follow:
 
 There where 91 issues in total. There where 9 issues (10%) with high impact, 43 issues (48%) with medium impact and 38 (42%) with low impact. The objective is to reduce to 0 the hight impact issues and to reduce in half the medium issues. Here are some issues and how I solve them.
 
+<!-- TOC --><a name="duplicated-string"></a>
 ## Duplicated String
 
 ![Untitled](images/Untitled%205.png)
@@ -621,6 +698,7 @@ As you can see there are no more issues in the `DriverController`
 
 ![Untitled](images/Untitled%208.png)
 
+<!-- TOC --><a name="empty-folder"></a>
 ## Empty Folder
 
 Other issue was the implementation of a method that was empty. 
@@ -698,6 +776,7 @@ Whith so I finished with all of the high risk errors.
 
 [Untitled](images/Untitled.mp4)
 
+<!-- TOC --><a name="string-pattern"></a>
 ## String Pattern
 
 An issue that seems to me interesting is the following
@@ -741,6 +820,7 @@ In this optimized version, the repetition is removed, avoiding the risk of exces
 
 ![Untitled](images/Untitled%2012.png)
 
+<!-- TOC --><a name="end-situation"></a>
 ## End Situation
 
 At the end I had 35 issues, none of them with high impact. The final percentage of each where:
@@ -748,8 +828,9 @@ At the end I had 35 issues, none of them with high impact. The final percentage 
 - 7 (20%) with low impact
 - 28 (80%) with medium impact. In fact 22 (80%) of those issues are for changing the `Autowired` with the `AllArgsConstructor`, the problem is that when I remove some of then does not autowired correctly.
 
-[Untitled](images/Untitled%201.mp4)
+There is a video that shows how is the final situation of the SonarLint scan
 
+<!-- TOC --><a name="owasp-zap"></a>
 # OWASP ZAP
 
 After finishing the project, testing of the REST API using OWASP ZAP, a tool designed to scan for potential vulnerabilities in web applications and APIs, were conducted. Configuring the tool presented a significant challenge. Initially, I created a script to automate the inclusion of the `accessToken` in the request headers. Secondly, with OpenAPI, I systematically scanned all endpoints within the application. You can view the scan process in the attached video files.
