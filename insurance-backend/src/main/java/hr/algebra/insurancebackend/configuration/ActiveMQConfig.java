@@ -1,5 +1,7 @@
 package hr.algebra.insurancebackend.configuration;
 
+import jakarta.jms.Connection;
+import jakarta.jms.JMSException;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,5 +40,14 @@ public class ActiveMQConfig {
         factory.setConnectionFactory(connectionFactory());
         factory.setConcurrency("1-1");
         return factory;
+    }
+
+    public boolean isBrokerActive() {
+        try (Connection connection = connectionFactory().createConnection()) {
+            connection.start();
+            return true;
+        } catch (JMSException e) {
+            return false;
+        }
     }
 }
