@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="98083517-b7df-49c4-96d0-c6963c30b3b9" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="12829b69-fbc5-43c1-be16-e4e4dfde827d" >
+		<jms:active-mq-connection specification="JMS_1_0_2b" >
+			<jms:factory-configuration brokerUrl="tcp://localhost:61616" />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="GetByIDFlow" doc:id="a69fc953-ef6d-48e3-a3a4-5d5db060e93c" >
+		<http:listener doc:name="Listener" doc:id="4df97f7e-d9cb-4a7d-a96f-77e655950b17" config-ref="HTTP_Listener_config" path="/"/>
+		<set-variable value="#[message.attributes.queryParams['id']]" doc:name="Set Variable" doc:id="5f3502f6-68c8-46e0-a32b-141443ed9b74" variableName="id"/>
+		<set-payload value="#[message.payload]" doc:name="Set Payload" doc:id="acbcc0d9-8e45-4db9-bde2-c546bd646b56" />
+		<http:request method="GET" doc:name="Request" doc:id="2931d52e-86b3-4471-8739-a460c6db0c13" url="#['http://localhost:8081/vehicles/' ++ vars.id]"/>
+		<file:write doc:name="Write" doc:id="fa0767ac-0f47-471e-91d0-4fc3026dc127" path="C:\Users\cserr\OneDrive\CARRERA\3er CURSO\2do CUATRIMESTRE\Interoperability\MuleFiles\insurance\getByID.txt" mode="APPEND">
+			<file:content ><![CDATA[#[(now() as String) ++ ' -> ' ++ write(payload, "application/json")]]]></file:content>
+		</file:write>
+	</flow>
+	<flow name="GetAllFlow" doc:id="0c0ba77b-6a00-4ff1-9667-031185004472" >
+		<http:listener doc:name="Listener" doc:id="3533ac04-d87f-4aa7-8fe4-7b51cb464d56" config-ref="HTTP_Listener_config" path="/all"/>
+		<set-payload value="#[message.payload]" doc:name="Set Payload" doc:id="23051b4f-d8df-40f6-844d-427aa92b849a" />
+		<http:request method="GET" doc:name="Request" doc:id="385ef3d2-8fc2-4320-8943-47251ec7bae2" url="#['http://localhost:8081/vehicles']"/>
+		<file:write doc:name="Write" doc:id="e401575d-10e0-4de7-9ab8-8e4506dfe46a" path="C:\Users\cserr\OneDrive\CARRERA\3er CURSO\2do CUATRIMESTRE\Interoperability\MuleFiles\insurance\getAll.txt" mode="APPEND">
+			<file:content ><![CDATA[#[(now() as String) ++ ' -> ' ++ write(payload, "application/json")]]]></file:content>
+		</file:write>
+	</flow>
+	<flow name="update" doc:id="b06ec539-ea9c-4e4f-9498-e7140da61b81" >
+		<http:listener doc:name="Listener" doc:id="f0fda26f-61c3-4f2f-b217-98c13d151bdc" config-ref="HTTP_Listener_config" path="/update"/>
+		<set-variable value="#[message.attributes.queryParams['id']]" doc:name="ID" doc:id="b2bd65c2-eef6-4e07-b15d-b9818e3ea3c8" variableName="id"/>
+		<set-payload value="#[message.payload]" doc:name="Set Payload" doc:id="0ec8ad4b-aa87-40bb-ab2b-a86449eca483" />
+		<http:request method="PUT" doc:name="Request" doc:id="34c6c09c-e1e3-42e5-8dac-05cecbe22a14" url="#['http://localhost:8081/vehicles/' ++ vars.id]">
+		</http:request>
+		<file:write doc:name="Write" doc:id="7467bd8e-da0e-4f65-a8e9-9cb6592bf74c" path="C:\Users\cserr\OneDrive\CARRERA\3er CURSO\2do CUATRIMESTRE\Interoperability\MuleFiles\insurance\update.txt" mode="APPEND">
+			<file:content ><![CDATA[#[(now() as String) ++ ' -> ' ++ write(payload, "application/json")]]]></file:content>
+		</file:write>
+	</flow>
+	<flow name="delete" doc:id="9841e2c2-fca2-4b21-9013-c14a7b6c58ee" >
+		<http:listener doc:name="Listener" doc:id="e8efccc7-b78e-4ead-81b5-a188899abebd" config-ref="HTTP_Listener_config" path="/delete"/>
+		<set-variable value="#[message.attributes.queryParams['id']]" doc:name="ID" doc:id="e67ebd16-0375-4cc7-bbcb-4dd58dc164dc" variableName="id"/>
+		<set-payload value="#[message.payload]" doc:name="Set Payload" doc:id="12fdbda2-3307-42e4-97e2-2fd3ef963840" />
+		<http:request method="DELETE" doc:name="Request" doc:id="254f3082-7938-49fb-b635-856d46a7d8a9" url="#['http://localhost:8081/vehicles/' ++ vars.id]">
+		</http:request>
+		<file:write doc:name="Write" doc:id="d210ddad-6ca0-43ea-be68-fbf2a8971c09" path="C:\Users\cserr\OneDrive\CARRERA\3er CURSO\2do CUATRIMESTRE\Interoperability\MuleFiles\insurance\delete.txt" mode="APPEND">
+			<file:content ><![CDATA[#[(now() as String) ++ ' -> ' ++ write(payload, "application/json")]]]></file:content>
+		</file:write>
+	</flow>
+	<flow name="post" doc:id="efa007f4-0310-407c-902b-a796811cd307">
+    <http:listener doc:name="Listener" doc:id="e32fd0ba-3a2a-409d-b9a5-7d98052ce2f2" config-ref="HTTP_Listener_config" path="/create"/>
+    <set-payload value="#[payload]" doc:name="Set Payload" doc:id="a0cc4ab7-a71d-4d17-9ca0-e53892adf05f" />
+    <http:request method="POST" doc:name="Request" doc:id="94cdcd65-5412-4df2-98b8-c221a9bc1bd8" url="http://localhost:8081/vehicles">
+    </http:request>
+    <file:write doc:name="Write" doc:id="e98d1337-6e43-41e8-afb5-8ddde08ad6f3" path="C:\Users\cserr\OneDrive\CARRERA\3er CURSO\2do CUATRIMESTRE\Interoperability\MuleFiles\insurance\post.txt">
+			<file:content ><![CDATA[#[(now() as String) ++ ' -> ' ++ write(payload, "application/json")]]]></file:content>
+		</file:write>
+</flow>
+	<flow name="interoperabilityprojectinsuranceFlow" doc:id="8ec94935-1867-4b61-8ece-01cd96ae641a" >
+		<jms:listener doc:name="On New Message" doc:id="a2f1d242-102d-4bc2-bd42-bcf949c3e628" config-ref="JMS_Config" destination="queue1"/>
+		<logger level="INFO" doc:name="Logger" doc:id="fef1d008-3f98-45eb-8525-c65355d3071a" />
+	</flow>
+</mule>
