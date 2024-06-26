@@ -48,6 +48,7 @@ public class ActiveMQConfig {
             return true;
         } catch (JMSException e) {
             return false;
+            
         }
     }
 }

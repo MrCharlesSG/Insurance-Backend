@@ -304,3 +304,26 @@ public class ActiveMQConfig {
 - **Broker Active Check**: The `isBrokerActive` method checks if the broker is active by attempting to create and start a connection.
 
 # jBPM
+
+In this section will be explained the graph made in jBPM for integrating with the REST API. Basically user can set an action (by default is get by id) between get by uid, post, put and delete. Once the action is “selected”, the user insert the neccessary information for each action:
+
+- get → the id
+- save → the vehicle
+- update → the vehicle and the id
+- delete → the id of the vehicle that user wants to delete
+
+The `set the url` script basically initialize the `url` global variable with the URL of the REST API and the id set by the user. The `print result` just print the result pf the REST call and the action of the process.
+
+These are some pictures of the process.
+
+![Untitled](images/Untitled%2018.png)
+
+![Untitled](images/Untitled%2019.png)
+
+![Untitled](images/Untitled%2020.png)
+
+![Untitled](images/Untitled%2021.png)
+
+![Untitled](images/Untitled%2022.png)
+
+![Untitled](images/Untitled%2023.png)
