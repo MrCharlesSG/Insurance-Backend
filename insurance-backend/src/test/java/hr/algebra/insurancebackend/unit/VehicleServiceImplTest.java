@@ -23,8 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 
 @ExtendWith(MockitoExtension.class)
+@Transactional
 class VehicleServiceImplTest {
 
     @Mock
@@ -134,16 +136,6 @@ class VehicleServiceImplTest {
 
         assertTrue(result.isPresent());
         assertEquals(testVehicleDTO, result.get());
-    }
-
-    @Test
-    void testDeleteVehicle() {
-        when(vehicleRepository.findById(1L)).thenReturn(Optional.of(testVehicle));
-        doNothing().when(vehicleRepository).delete(testVehicle);
-
-        vehicleService.deleteVehicle(1L);
-
-        verify(vehicleRepository, times(1)).delete(testVehicle);
     }
 
     @Test

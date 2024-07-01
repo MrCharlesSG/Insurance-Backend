@@ -5,6 +5,7 @@ import hr.algebra.insurancebackend.dto.ReportDTO;
 import hr.algebra.insurancebackend.dto.ReportRequestDTO;
 import hr.algebra.insurancebackend.service.ReportService;
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import lombok.AllArgsConstructor;
@@ -24,8 +25,8 @@ import static hr.algebra.insurancebackend.constants.Constants.ReportControllerEn
 public class ReportController {
 
     private ReportService reportService;
-
     private final MeterRegistry meterRegistry;
+    private final DistributionSummary openedReportsPerVehicleSummary;
 
     @GetMapping(REJECTED)
     public List<ReportDTO> getRejectedReports() {
@@ -50,7 +51,9 @@ public class ReportController {
     @PostMapping
     public ReportDTO openReport(@RequestBody ReportRequestDTO reportRequestDTO) {
         try {
-            return reportService.openAReport(reportRequestDTO);
+            ReportDTO report = reportService.openAReport(reportRequestDTO);
+            openedReportsPerVehicleSummary.record(1); // Record a report opening event
+            return report;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }

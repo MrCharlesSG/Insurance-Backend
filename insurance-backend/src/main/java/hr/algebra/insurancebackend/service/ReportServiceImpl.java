@@ -133,4 +133,24 @@ public class ReportServiceImpl implements ReportService {
         infoReportDriverB.setStatus(InfoReportDriverStatus.REJECTED);
         infoReportDriverRepository.save(infoReportDriverB);
     }
+
+    @Override
+    public long getNumOfReports() {
+        return reportRepository.count();
+    }
+
+    @Override
+    public long getNumOfReportsWaiting() {
+        return reportRepository.countWaitingReports();
+    }
+
+    @Override
+    public long getNumOfReportsRejected() {
+        return reportRepository.countRejectedReports();
+    }
+
+    @Override
+    public long getNumOfReportsAccepted() {
+        return reportRepository.countAcceptedReports();
+    }
 }

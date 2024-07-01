@@ -100,4 +100,9 @@ public class VehicleServiceImpl implements VehicleService {
                 .findByPlate(plate)
                 .map(VehicleInfoDTO::new);
     }
+
+    @Override
+    public long getNumOfVehicles() {
+        return vehicleRepository.count();
+    }
 }

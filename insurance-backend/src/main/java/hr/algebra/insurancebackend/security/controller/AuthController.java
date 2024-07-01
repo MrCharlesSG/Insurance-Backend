@@ -7,6 +7,7 @@ import hr.algebra.insurancebackend.security.dto.SignUpVehicleDTO;
 import hr.algebra.insurancebackend.security.service.AuthService;
 import hr.algebra.insurancebackend.security.service.RefreshTokenService;
 import hr.algebra.insurancebackend.security.service.TokenBlackListService;
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+import io.micrometer.core.instrument.Counter;
 
 import javax.validation.Valid;
 
@@ -33,12 +35,18 @@ public class AuthController {
     private AuthService authService;
 
     private TokenBlackListService tokenBlacklist;
+    private final MeterRegistry meterRegistry;
+
+    private final Counter loginCounter;
+    private final Counter logoutCounter;
+    private final Counter registerCounter;
 
     @PostMapping("/api/v1/login")
     public Object authenticateAndGetToken(@RequestBody AuthRequestDTO authRequestDTO){
-        try{
+        try {
+            loginCounter.increment();
             return authService.login(authRequestDTO);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
     }
@@ -46,6 +54,7 @@ public class AuthController {
     @PostMapping("/api/v1/register/vehicle")
     public Object registrationOfVehicleAndGetToken(@Valid @RequestBody SignUpVehicleDTO signUpVehicleDTO){
         try {
+            registerCounter.increment();
             return authService.registerVehicle(signUpVehicleDTO);
         } catch (hr.algebra.insurancebackend.exceptions.ValidationException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -56,6 +65,7 @@ public class AuthController {
     public ResponseEntity<String> logout(HttpServletRequest request) {
         String token = extractTokenFromRequest(request);
         tokenBlacklist.addToBlacklist(token);
+        logoutCounter.increment();
         return ResponseEntity.ok("Logged out successfully");
     }
 

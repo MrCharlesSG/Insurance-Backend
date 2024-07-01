@@ -134,7 +134,7 @@ public class AuthControllerIntegrationTest {
 
     @Test
     public void loginOkLogoutAndTryAccessResourceThenStatusForbiddenAndLoginAgainAndAccessResource_thenStatusOK() throws Exception{
-        JSONObject jsonObject = loginOkWithUser(mvc, correctUser());
+       JSONObject jsonObject = loginOkWithUser(mvc, correctUser());
 
         mvc.perform(post("/auth/api/v1/logout")
                         .header("Authorization", "Bearer " + jsonObject.getString("accessToken"))
@@ -152,10 +152,11 @@ public class AuthControllerIntegrationTest {
 
         mvc.perform(get("/driver/byEmail")
                         .header("Authorization", "Bearer " + login.getString("accessToken"))
-                        .param("email", "ger.pa@example.com")
+                        .param("email", "laura.ramirez@example.com")
                 )
                 .andExpect(status().isOk())
                 .andDo(print());
+
 
     }
 

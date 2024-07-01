@@ -21,4 +21,11 @@ public interface ReportService {
     void acceptReport(AcceptReportRequestDTO acceptReportRequestDTO, long id) throws ValidationException;
 
     void rejectReport(long id);
+
+    long getNumOfReports();
+
+    long getNumOfReportsWaiting();
+    long getNumOfReportsRejected();
+
+    long getNumOfReportsAccepted();
 }

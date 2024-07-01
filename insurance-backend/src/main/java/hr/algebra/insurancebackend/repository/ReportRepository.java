@@ -33,4 +33,22 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             "JOIN r.infoReportDriverB b " +
             "WHERE a.vehicle.id = :vehicleId OR b.vehicle.id = :vehicleId")
     List<Report> findAllByVehicleId(@Param("vehicleId") Long vehicleId);
+
+    @Query("SELECT COUNT(r) FROM Report r " +
+            "JOIN r.infoReportDriverA a " +
+            "JOIN r.infoReportDriverB b " +
+            "WHERE a.status = REJECTED OR b.status = REJECTED")
+    long countRejectedReports();
+
+    @Query("SELECT COUNT(r) FROM Report r " +
+            "JOIN r.infoReportDriverA a " +
+            "JOIN r.infoReportDriverB b " +
+            "WHERE a.status = ACCEPTED AND b.status = ACCEPTED")
+    long countAcceptedReports();
+
+    @Query("SELECT COUNT(r) FROM Report r " +
+            "JOIN r.infoReportDriverA a " +
+            "JOIN r.infoReportDriverB b " +
+            "WHERE a.status = WAITING OR b.status = WAITING")
+    long countWaitingReports();
 }

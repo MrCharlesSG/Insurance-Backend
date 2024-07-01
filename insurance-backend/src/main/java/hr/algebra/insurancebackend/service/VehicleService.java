@@ -24,4 +24,6 @@ public interface VehicleService {
     void deleteVehicle(Long id);
 
     Optional<VehicleInfoDTO> getByPlate(String plate);
+
+    long getNumOfVehicles();
 }
