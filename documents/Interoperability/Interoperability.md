@@ -1,9 +1,36 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Interoperability](#interoperability)
+- [Introduction](#introduction)
+   * [Key Features](#key-features)
+- [**JavaFX Frontend**](#javafx-frontend)
+   * [**How It Is Consumed**](#how-it-is-consumed)
+   * [**Key Functions**](#key-functions)
+   * [Last Version](#last-version)
+      + [**Appearance**](#appearance)
+- [Mule](#mule)
+   * [POST](#post)
+   * [GET By ID](#get-by-id)
+   * [GET ALL](#get-all)
+   * [DELETE](#delete)
+   * [PUT](#put)
+- [ActiveMQ](#activemq)
+   * [Mule Flow](#mule-flow)
+   * [Backend Implementation](#backend-implementation)
+   * [ActiveMQ Configuration](#activemq-configuration)
+- [jBPM](#jbpm)
+
+<!-- TOC end -->
+
+<!-- TOC --><a name="interoperability"></a>
 # Interoperability
 
+<!-- TOC --><a name="introduction"></a>
 # Introduction
 
 This project is an application designed to manage vehicles and their associated drivers, leveraging a Spring backend and a JavaFX frontend. It was created to meet the requirements of three distinct courses, resulting in some design choices that, while potentially unconventional or inefficient, serve to demonstrate alternative approaches and solutions.
 
+<!-- TOC --><a name="key-features"></a>
 ## Key Features
 
 1. **User Management**: Vehicles can register, log in, and log out of the system.
@@ -13,10 +40,12 @@ This project is an application designed to manage vehicles and their associated 
 5. **Report Handling**: Vehicles can accept or reject reports made by others regarding their car.
 6. **Future Enhancements**: Plans include the integration of an insurance model and expanded roles for drivers.
 
+<!-- TOC --><a name="javafx-frontend"></a>
 # **JavaFX Frontend**
 
 The frontend for this project uses JavaFX to interact with several REST endpoints provided by a Spring server. The main controllers consumed by the JavaFX frontend are **`AuthController`**, **`DriversController`**, and **`ReportController`**. This section explains how the REST API is consumed in the frontend, highlights key features, and provides a visual overview of the application.
 
+<!-- TOC --><a name="how-it-is-consumed"></a>
 ## **How It Is Consumed**
 
 Each REST endpoint from the REST API that the frontend consumes has its own singleton service for three main reasons:
@@ -89,6 +118,7 @@ All functions follow the same structure:
 
 </aside>
 
+<!-- TOC --><a name="key-functions"></a>
 ## **Key Functions**
 
 One key function, found in the **`AuthService`**, justifies the approach of having services to consume the REST API. This function is **`getAuthHeader`**.
@@ -105,12 +135,14 @@ public HttpHeaders getAuthHeader() throws IllegalAccessException {
 
 The logic in **`TokenService.INSTANCE.getAccessToken`** ensures that if any class tries to get an authenticated header without being authenticated, an **`IllegalAccessException`** is thrown. Otherwise, the **`getAuthHeader`** function returns the header.
 
+<!-- TOC --><a name="last-version"></a>
 ## Last Version
 
 In a lately version a new section was made. This section basically integrate the `/vehicles` endpoints. The implementation in both backend and frontend folllows the same structure as the previous ones. As this controller does not need authentication for future purposes, the section of vehicles can be access outside login screen. Other thing interesting to know is that this service access the REST API via Mule Flows. This Mule Flows are explained later.
 
 Here are same pictures of how the application looks like:
 
+<!-- TOC --><a name="appearance"></a>
 ### **Appearance**
 
 ![Untitled](images/Untitled.png)
@@ -127,6 +159,7 @@ Here are same pictures of how the application looks like:
 
 ![Untitled](images/Untitled%206.png)
 
+<!-- TOC --><a name="mule"></a>
 # Mule
 
 In this project, we have two controllers that require full authentication: `DriversController` and `ReportController`. These are crucial for the application's functionality. To simplify the Mule Flows and ActiveMQ implementation, a new controller named `VehiclesController` was created. This section describes the implementation of the Mule flows, how to use them, and what to expect from each flow. Five REST endpoints are implemented:
@@ -136,6 +169,7 @@ In this project, we have two controllers that require full authentication: `Driv
 
 </aside>
 
+<!-- TOC --><a name="post"></a>
 ## POST
 
 This endpoint listens for HTTP POST requests to create a new vehicle record.
@@ -159,6 +193,7 @@ This endpoint listens for HTTP POST requests to create a new vehicle record.
 
 ![Untitled](images/Untitled%208.png)
 
+<!-- TOC --><a name="get-by-id"></a>
 ## GET By ID
 
 This endpoint listens for HTTP GET requests to retrieve a vehicle record by ID.
@@ -173,6 +208,7 @@ This endpoint listens for HTTP GET requests to retrieve a vehicle record by ID.
 
 ![images/Untitled%2010.png](images/Untitled%2010.png)
 
+<!-- TOC --><a name="get-all"></a>
 ## GET ALL
 
 This endpoint listens for HTTP GET requests to retrieve all vehicle records.
@@ -186,6 +222,7 @@ This endpoint listens for HTTP GET requests to retrieve all vehicle records.
 
 ![images/Untitled%2012.png](images/Untitled%2012.png)
 
+<!-- TOC --><a name="delete"></a>
 ## DELETE
 
 This endpoint listens for HTTP DELETE requests to delete a vehicle record by ID.
@@ -200,6 +237,7 @@ This endpoint listens for HTTP DELETE requests to delete a vehicle record by ID.
 
 ![images/Untitled%2014.png](images/Untitled%2014.png)
 
+<!-- TOC --><a name="put"></a>
 ## PUT
 
 This endpoint listens for HTTP PUT requests to update a vehicle record by ID.
@@ -214,6 +252,7 @@ This endpoint listens for HTTP PUT requests to update a vehicle record by ID.
 
 ![images/Untitled%2016.png](images/Untitled%2016.png)
 
+<!-- TOC --><a name="activemq"></a>
 # ActiveMQ
 
 In every endpoint of the `VehiclesController`, a message is sent to the ActiveMQ `queue1`. This message is subsequently received by a Mule flow, which logs the message for further processing or monitoring. This approach offers several advantages:
@@ -223,6 +262,7 @@ In every endpoint of the `VehiclesController`, a message is sent to the ActiveMQ
 3. **Reliability**: With ActiveMQ, messages are persisted to disk, ensuring they are not lost even if the system crashes or restarts.
 4. **Flexibility**: The Mule flow can be modified to perform various actions such as transforming the message, routing it to different destinations, or triggering additional processes based on the message content.
 
+<!-- TOC --><a name="mule-flow"></a>
 ## Mule Flow
 
 The Mule flow essentially listens for new messages on `queue1` and logs them. Here is a simplified representation:
@@ -231,6 +271,7 @@ The Mule flow essentially listens for new messages on `queue1` and logs them. He
 
 The Mule flow starts with an "On New Message" component that listens for messages on `queue1`. Once a message is received, it is logged.
 
+<!-- TOC --><a name="backend-implementation"></a>
 ## Backend Implementation
 
 In the backend, every endpoint of `/vehicles` invokes the following function to send a message to ActiveMQ:
@@ -249,6 +290,7 @@ private void sendMessageToActiveMQ(String message) {
 - **Broker Check**: The method first checks if the ActiveMQ broker is active using `activeMQConfig.isBrokerActive()`.
 - **Send Message**: If the broker is active, it sends the message using `jmsTemplate.convertAndSend(message)`.
 
+<!-- TOC --><a name="activemq-configuration"></a>
 ## ActiveMQ Configuration
 
 Here is the configuration for ActiveMQ:
@@ -303,6 +345,7 @@ public class ActiveMQConfig {
 - **Listener Container Factory**: Configures a `DefaultJmsListenerContainerFactory` for managing JMS listeners.
 - **Broker Active Check**: The `isBrokerActive` method checks if the broker is active by attempting to create and start a connection.
 
+<!-- TOC --><a name="jbpm"></a>
 # jBPM
 
 In this section will be explained the graph made in jBPM for integrating with the REST API. Basically user can set an action (by default is get by id) between get by uid, post, put and delete. Once the action is “selected”, the user insert the neccessary information for each action:
