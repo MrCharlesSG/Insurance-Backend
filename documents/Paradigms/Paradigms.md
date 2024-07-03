@@ -1,9 +1,56 @@
+<!-- TOC start (generated with https://github.com/derlin/bitdowntoc) -->
+
+- [Paradigms](#paradigms)
+- [Introduction](#introduction)
+   * [Key Features](#key-features)
+- [Testing](#testing)
+   * [UI test](#ui-test)
+   * [Integration test](#integration-test)
+      + [First Use Case](#first-use-case)
+      + [Second Use Case](#second-use-case)
+      + [Third Use Case](#third-use-case)
+      + [Conclusion](#conclusion)
+   * [Unit Test](#unit-test)
+- [Aspects](#aspects)
+- [Git](#git)
+   * [**Feature Branch Workflow**](#feature-branch-workflow)
+      + [**Branching Model**](#branching-model)
+      + [**Development Cycle**](#development-cycle)
+      + [**Code Review and Integration**](#code-review-and-integration)
+      + [**Merge and Deployment**](#merge-and-deployment)
+      + [**Benefits:**](#benefits)
+- [SOLID](#solid)
+   * [Example 1](#example-1)
+   * [Example 2](#example-2)
+   * [Example 3](#example-3)
+   * [Example 4](#example-4)
+- [**Functional Programming**](#functional-programming)
+   * [**Example 1**](#example-1-1)
+   * [**Example 2**](#example-2-1)
+   * [**Example 3**](#example-3-1)
+   * [**Example 4**](#example-4-1)
+   * [**Example 5**](#example-5)
+- [Metrics](#metrics)
+   * [Request Count](#request-count)
+   * [Error Count](#error-count)
+   * [Response Time](#response-time)
+   * [Concurrency](#concurrency)
+   * [Report Per Vehicle](#report-per-vehicle)
+- [Docker](#docker)
+   * [How Was the Server Containerized?](#how-was-the-server-containerized)
+   * [How to Use the Image?](#how-to-use-the-image)
+
+<!-- TOC end -->
+
+<!-- TOC --><a name="paradigms"></a>
 # Paradigms
 
+<!-- TOC --><a name="introduction"></a>
 # Introduction
 
 This project is an application designed to manage vehicles and their associated drivers, leveraging a Spring backend and a JavaFX frontend. It was created to meet the requirements of three distinct courses, resulting in some design choices that, while potentially unconventional or inefficient, serve to demonstrate alternative approaches and solutions.
 
+<!-- TOC --><a name="key-features"></a>
 ## Key Features
 
 1. **User Management**: Vehicles can register, log in, and log out of the system.
@@ -13,6 +60,7 @@ This project is an application designed to manage vehicles and their associated 
 5. **Report Handling**: Vehicles can accept or reject reports made by others regarding their car.
 6. **Future Enhancements**: Plans include the integration of an insurance model and expanded roles for drivers.
 
+<!-- TOC --><a name="testing"></a>
 # Testing
 
 The goal of testing is to deliver the software with the least defects as possible. For that reason we try to find the most errors in production as posible by testing the software in advance.  
@@ -26,10 +74,12 @@ There are various types of testing such us unit test, integration test, system t
 
 The core functionallity of the project is the Spring Boot server. This backend is the only thing that is tested in the project. It has two approaches for testing, the integration test done to each of the controllers but the `VehiclesController`, and the Unit test done only to `VehiclesService`. Why this approach for the project? 
 
+<!-- TOC --><a name="ui-test"></a>
 ## UI test
 
 I dind’t test my UI becouse is not the most prioretized part of the project. In fact, if the project continue, the UI is going to change to a mobile scope instead of the desktop that is now.  Actually the actuall frontend of the project is just done for fullfilling some requirements of Advance Information System Interoperability subject. With so said, when testing in my project my main objective is to test the core functions of it.
 
+<!-- TOC --><a name="integration-test"></a>
 ## Integration test
 
 Integration test are done for `AuthController`, `DriversController`, and `ReportsController`. The scope of this test is to test all endpoints the REST API expose. This three controllers are (in this moment) all the functionallity the application has. Why only Integration?
@@ -42,6 +92,7 @@ The development of the project has follow an almost TDD (Test Driven Development
 
 ![Untitled](images/Untitled%201.png)
 
+<!-- TOC --><a name="first-use-case"></a>
 ### First Use Case
 
 1. User login
@@ -92,6 +143,7 @@ The development of the project has follow an almost TDD (Test Driven Development
     }
 ```
 
+<!-- TOC --><a name="second-use-case"></a>
 ### Second Use Case
 
 1. User login
@@ -123,6 +175,7 @@ The development of the project has follow an almost TDD (Test Driven Development
     }
 ```
 
+<!-- TOC --><a name="third-use-case"></a>
 ### Third Use Case
 
 1. User Login but insert incorrect token so he can’t refresh it
@@ -140,10 +193,12 @@ The development of the project has follow an almost TDD (Test Driven Development
     }
 ```
 
+<!-- TOC --><a name="conclusion"></a>
 ### Conclusion
 
 For concluding with the integration test, most of the test of the `AuthController` test the security, and the test in the `ReportController`, and `DriversController` the use cases of the project.
 
+<!-- TOC --><a name="unit-test"></a>
 ## Unit Test
 
 There is one controller that is not test with the integration approach that is the `VehiclesController`. This is because of the singularity of it. This controller is not used any moment in the application. The only reason of this controller to exist is to create a unsecured and simple endpoint for make simple to “play” with it. What “play” means is that this endpoint is used to simplified the implementations of some requirements of other subjects.
@@ -184,6 +239,7 @@ As I already said the `VehiclesController` is simple, is as simple as it just re
     }
 ```
 
+<!-- TOC --><a name="aspects"></a>
 # Aspects
 
 The project implements in total 6 aspects. The scope of the aspects is divided in two main things:
@@ -271,28 +327,35 @@ The project implements in total 6 aspects. The scope of the aspects is divided i
     ```
     
 
+<!-- TOC --><a name="git"></a>
 # Git
 
 The strategy used for the backend development follows a Git branching model known as "Feature Branch Workflow". Here's a more detailed explanation:
 
+<!-- TOC --><a name="feature-branch-workflow"></a>
 ## **Feature Branch Workflow**
 
+<!-- TOC --><a name="branching-model"></a>
 ### **Branching Model**
 
 Each new feature, bug fix, or requirement is developed in its own branch. This isolates changes related to specific tasks from the main development line. When a new task is started, a new branch is created from the main development branch (**`main`**). This branch has a descriptive name such as `reports`, `drives`, `vehicles-for-interoperability`.
 
+<!-- TOC --><a name="development-cycle"></a>
 ### **Development Cycle**
 
 Task and requirement are develop as descrived in advance. Doing commits during development is crucial so work is saved and can be tracked. After development and testing, branches are pushed and shared.
 
+<!-- TOC --><a name="code-review-and-integration"></a>
 ### **Code Review and Integration**
 
 Once the feature is complete or the task is finished, a pull request (PR) is opened to merge their feature branch into the `main` branch. If there where other team members, they could review the code changes in the PR, providing feedback, suggestions, or approval.
 
+<!-- TOC --><a name="merge-and-deployment"></a>
 ### **Merge and Deployment**
 
 After the PR is approved and any necessary changes are addressed, the feature branch is merged into the main development branch. The changes are now part of the `main` branch and are available for further testing, integration and improvement.
 
+<!-- TOC --><a name="benefits"></a>
 ### **Benefits:**
 
 - **Isolation**: Each feature or task is developed in isolation, reducing the risk of conflicts with other changes and making it easier to manage the complexity of the codebase.
@@ -301,10 +364,12 @@ After the PR is approved and any necessary changes are addressed, the feature br
 
 ![Untitled](images/Untitled%202.png)
 
+<!-- TOC --><a name="solid"></a>
 # SOLID
 
 Here are some examples of SOLID principles followed for developing the solution
 
+<!-- TOC --><a name="example-1"></a>
 ## Example 1
 
 Here is a good example of the Open/Closed Principle. In the frontend, when we want to filter reports, we have two options for developing a solution:
@@ -371,6 +436,7 @@ public enum ReportStatusFilter {
 
 </aside>
 
+<!-- TOC --><a name="example-2"></a>
 ## Example 2
 
 As you may notice we follow another principle just with the very same example in before. Becouse we as a client when we get a `ReportStatus` we may just need the url or the color. For that we can follow the Interface Segregation principle that suggest to have small Interfaces that segregate the classes into functions. In the project is solved as followed:
@@ -439,6 +505,7 @@ public List<ReportDTO> getReportsFiltered(ReportStatusFilter filter) throws Ille
     }
 ```
 
+<!-- TOC --><a name="example-3"></a>
 ## Example 3
 
 An example of the Dependency Inversion Principle. The DIP seeks for the decoupling of software modules. This way, instead of high-level module depending on low-level modules, both will depened on abstractions. In the project we can see this principles in all repositories and services. Every repository or service has an interface an a class implementing it. Moreover, Spring helps in this task since you don’t have to determine what implementation the classes need to take if there is only one implementation. So for example we have the `AuthService` interface and the `AuthServiceImpl` that implements that class:
@@ -509,6 +576,7 @@ public class AuthController {
  }
 ```
 
+<!-- TOC --><a name="example-4"></a>
 ## Example 4
 
 The following example is the crown jewel. It follows 3 principles in three classes:
@@ -580,12 +648,14 @@ This code is part of the frontend of javafx and is used for saving the current l
 3. **Liskov Substitution Principle (LSP)**:
     - The subclasses (**`TokenSerializer`** and **`VehicleSerializer`**) can be substituted for their base class (**`Serializer`**) without affecting the behavior of the program.
 
+<!-- TOC --><a name="functional-programming"></a>
 # **Functional Programming**
 
 Utilizing functional programming in Spring aids in handling **`null`** values, transforming data, and avoiding side effects. Here are some examples demonstrating how I transformed purely object-oriented functions into purely functional ones.
 
 In my project, all the functions in **`DriverService`** employ a functional programming approach. Below is an overview of these functions:
 
+<!-- TOC --><a name="example-1-1"></a>
 ## **Example 1**
 
 The **`createDriver`** function in the **`DriverService`** class originally looks like this in a non-functional approach:
@@ -642,6 +712,7 @@ public Optional<DriverDTO> createDriver(DriverDTO driverDTO) throws ValidationEx
 - **`.filter(dto -> { ... })`** checks if **`checkDriverDTO`** throws an exception and only allows continuation if it doesn't.
 - **`.map(dto -> { ... })`** performs all necessary operations to create and save the **`Driver`**, and finally returns the created **`DriverDTO`**.
 
+<!-- TOC --><a name="example-2-1"></a>
 ## **Example 2**
 
 Here is how a **`getById`** function might look in an object-oriented approach:
@@ -683,6 +754,7 @@ public Optional<DriverDTO> getByEmail(String email) throws ValidationException {
 
 ```
 
+<!-- TOC --><a name="example-3-1"></a>
 ## **Example 3**
 
 Here is how the **`getAllDriversOfAuthenticatedVehicle`** function looks in an almost purely functional programming approach:
@@ -715,6 +787,7 @@ public List<DriverDTO> getAllDriversOfAuthenticatedVehicle() {
 
 ```
 
+<!-- TOC --><a name="example-4-1"></a>
 ## **Example 4**
 
 Sometimes, functional programming may not look more concise than the non-functional approach. Here is the original function:
@@ -741,6 +814,7 @@ private void checkDriverDTO(DriverDTO driverDTO) throws IllegalArgumentException
 
 ```
 
+<!-- TOC --><a name="example-5"></a>
 ## **Example 5**
 
 Here are the **`associate`** and **`disassociate`** functions in a conventional Java way:
@@ -801,12 +875,14 @@ public Optional<DriverDTO> disassociateDriver(String email) throws ValidationExc
 }
 ```
 
+<!-- TOC --><a name="metrics"></a>
 # Metrics
 
 In the realm of software development, especially for applications that manage critical functionalities like vehicle and driver management, monitoring and analyzing application metrics is indispensable. Metrics provide a quantifiable measure of various aspects of an application's performance, reliability, and efficiency. By collecting and interpreting these metrics, development and operations teams can ensure the smooth operation of the application, quickly identify and resolve issues, and make informed decisions for future improvements.
 
 Metrics are collected by Prometheus and displayed in Graphana. All graphics show up in the section are exact moments in Graphana. The application expose the `/actuator/prometheus` endpoint, so Prometheus can consume it.
 
+<!-- TOC --><a name="request-count"></a>
 ## Request Count
 
 Counts the number of logins, logouts and register
@@ -857,6 +933,7 @@ public class AuthController {
 }
 ```
 
+<!-- TOC --><a name="error-count"></a>
 ## Error Count
 
 This metrics count the number of failures in the driver’s creation function. This way can be track how many times the user has made a mistake in the form. In case this metric is to high, the form and the creation process must be changed.
@@ -905,6 +982,7 @@ public class DriverController {
 }
 ```
 
+<!-- TOC --><a name="response-time"></a>
 ## Response Time
 
 The present metric measure the average time taken  for each get request in the `/drivers` endpoint. As this are one of the most commonly used features of the application it is crucial for them to be optimal. With the metric, it is tried to monitor this, so if users complains or we notice that the call are slower, they can be optimiced and tackle the problem.
@@ -953,6 +1031,7 @@ public class DriverController {
 }
 ```
 
+<!-- TOC --><a name="concurrency"></a>
 ## Concurrency
 
 The following metric monitors the number of concurrent requests being handled in a associate and dissociate endpoints in the `/drivers` controller. The utility of this metrics is to track when user are more used to make this calls and monitor if this could be a problem so can be tackle quickly.
@@ -1009,6 +1088,7 @@ public class DriverController {
 }
 ```
 
+<!-- TOC --><a name="report-per-vehicle"></a>
 ## Report Per Vehicle
 
 This metric calculte the average number of report of each type (accepted, rejected and waiting) per vehicle. This metric can be used to make some bussiness reports and presentations. If the count is to high, can mean two things: 1) There are to many reports for a little users 2) The users are using a lot the product. Also, understanding the average reports a user makes, can be prevented the resources will need to have when this number of users increase.
@@ -1035,6 +1115,7 @@ public class ReportMetricsConfig {
 }
 ```
 
+<!-- TOC --><a name="docker"></a>
 # Docker
 
 Be able to dockerize an application is a crucial skill in nowadays world. For so I have containericed my application. As the project consist in both parts, backend in Spring Boot and frontend in JavaFx, I needed to try to containerice both separately which is the main goal of containeraization (have non monolotic applications). 
@@ -1043,6 +1124,7 @@ The Spring Boot server are an ideal candidate for Docker since are designed to r
 
 The JavaFX frontend is more complex to containerize than the backend, as it requires a GUI, which Docker containers are not designed to handle efficiently. Running GUI applications inside containers can introduce performance overhead and latency, making the user experience suboptimal. For setting up the necessary environment for JavaFX (JDK, JavaFX libraries, display server, etc.) inside a container adds significant complexity and maintenance overhead.
 
+<!-- TOC --><a name="how-was-the-server-containerized"></a>
 ## How Was the Server Containerized?
 
 1. **Clean the Project**:
@@ -1100,6 +1182,7 @@ The JavaFX frontend is more complex to containerize than the backend, as it requ
     This command pushes the tagged image to the Docker Hub repository.
     
 
+<!-- TOC --><a name="how-to-use-the-image"></a>
 ## How to Use the Image?
 
 1. **Pull the Image**:
